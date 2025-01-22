@@ -7,6 +7,7 @@ import { SyncPermissions } from "../shared/sync-permissions";
 import { SyncProducts } from "../shared/sync-products";
 import { SyncMicrofrontends } from "./sync-microfrontends";
 import { SyncSlots } from "./sync-slots";
+import { SyncWorkspace } from "./sync-workspace";
 export interface SyncUIData {
   productName: string;
   pathToValues: string;
@@ -84,6 +85,15 @@ export class SyncUICommand implements OnecxCommand<SyncUIData> {
     );
     // Slots
     new SyncSlots().synchronize(
+      values,
+      {
+        ...data,
+        uiName,
+      },
+      options
+    );
+    // Workspace
+    new SyncWorkspace().synchronize(
       values,
       {
         ...data,
