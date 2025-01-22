@@ -1,41 +1,35 @@
 import fs from "fs";
 import path from "path";
-import {
-  SynchronizationStep,
-  SynchronizationStepOptions,
-} from "../../../util/synchronization-step";
+import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getImportsDirectory, logger } from "../../../util/utils";
-import { SharedData } from "./shared-data";
-import { red } from "colors/safe";
 
-export interface SyncMicroservicesParameters extends SharedData {
+import { red } from "colors/safe";
+import { SharedSyncData } from "../sync-command";
+
+export interface SyncMicroservicesparams extends SharedSyncData {
   customName: string;
 }
 
 export class SyncMicroservices
-  implements SynchronizationStep<SyncMicroservicesParameters>
+  implements SynchronizationStep<SyncMicroservicesparams>
 {
-  synchronize(
-    _: any,
-    parameters: SyncMicroservicesParameters,
-    { dry: dryRun, env }: SynchronizationStepOptions
-  ): void {
+  synchronize(_: any, { env, dry, ...params }: SyncMicroservicesparams): void {
     let importsDir = getImportsDirectory(
       "./imports/product-store/microservices/",
       env
     );
 
-    const fileName = `${parameters.productName}_${parameters.customName}.json`;
+    const fileName = `${params.productName}_${params.customName}.json`;
     const filePath = path.join(importsDir, fileName);
 
     const jsonContent = {
       version: "xxx",
-      description: parameters.customName,
-      name: parameters.customName,
+      description: params.customName,
+      name: params.customName,
       type: "ui",
     };
 
-    if (dryRun) {
+    if (dry) {
       logger.info(
         `Dry Run: Would write to ${filePath} with content:`,
         JSON.stringify(jsonContent, null, 2)
@@ -49,18 +43,17 @@ export class SyncMicroservices
 
   removeSynchronization(
     _: any,
-    input: SyncMicroservicesParameters,
-    options: SynchronizationStepOptions
+    { env, dry, ...params }: SyncMicroservicesparams
   ): void {
     let importsDir = getImportsDirectory(
       "./imports/product-store/microservices/",
-      options.env
+      env
     );
 
-    const fileName = `${input.productName}_${input.customName}.json`;
+    const fileName = `${params.productName}_${params.customName}.json`;
     const filePath = path.join(importsDir, fileName);
 
-    if (options.dry) {
+    if (dry) {
       logger.info(`Dry Run: Would remove file at ${filePath}`);
     } else {
       if (fs.existsSync(filePath)) {

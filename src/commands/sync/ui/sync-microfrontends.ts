@@ -1,23 +1,19 @@
 import fs from "fs";
 import path from "path";
-import {
-  SynchronizationStep,
-  SynchronizationStepOptions,
-} from "../../../util/synchronization-step";
+import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getImportsDirectory, logger } from "../../../util/utils";
 import { SyncUIData } from "./sync-ui";
 
-export interface SyncMicrofrontendsParameters extends SyncUIData {
+export interface SyncMicrofrontendsparams extends SyncUIData {
   uiName: string;
 }
 
 export class SyncMicrofrontends
-  implements SynchronizationStep<SyncMicrofrontendsParameters>
+  implements SynchronizationStep<SyncMicrofrontendsparams>
 {
   synchronize(
     values: any,
-    parameters: SyncMicrofrontendsParameters,
-    { dry: dryRun, env }: SynchronizationStepOptions
+    { env, dry, ...params }: SyncMicrofrontendsparams
   ): void {
     let importsDirectory = getImportsDirectory(
       "./imports/product-store/microfrontends",
@@ -41,7 +37,7 @@ export class SyncMicrofrontends
       string,
       any
     ][]) {
-      const fileName = `${parameters.productName}_${parameters.uiName}_${key}.json`;
+      const fileName = `${params.productName}_${params.uiName}_${key}.json`;
       const filePath = path.join(importsDirectory, fileName);
 
       const jsonContent = {
@@ -69,12 +65,12 @@ export class SyncMicrofrontends
       ]) {
         if (!spec[requiredField]) {
           logger.warning(
-            `Missing required field ${requiredField} in microfrontend spec ${key}, this can cause issues.`
+            `Missing field ${requiredField} in microfrontend spec ${key}, this can cause issues.`
           );
         }
       }
 
-      if (dryRun) {
+      if (dry) {
         logger.info(
           `Dry Run: Would write to ${filePath} with content:`,
           JSON.stringify(jsonContent, null, 2)
@@ -89,12 +85,11 @@ export class SyncMicrofrontends
 
   removeSynchronization(
     values: any,
-    input: SyncMicrofrontendsParameters,
-    options: SynchronizationStepOptions
+    { env, dry, ...params }: SyncMicrofrontendsparams
   ): void {
     let importsDirectory = getImportsDirectory(
       "./imports/product-store/microfrontends",
-      options.env
+      env
     );
 
     if (
@@ -109,11 +104,11 @@ export class SyncMicrofrontends
     const microfrontends = values.app.operator.microfrontend.specs;
 
     for (const key of Object.keys(microfrontends)) {
-      const fileName = `${input.productName}_${input.uiName}_${key}.json`;
+      const fileName = `${params.productName}_${params.uiName}_${key}.json`;
       const filePath = path.join(importsDirectory, fileName);
 
       if (fs.existsSync(filePath)) {
-        if (options.dry) {
+        if (dry) {
           logger.info(`Dry Run: Would remove ${filePath}`);
         } else {
           fs.unlinkSync(filePath);

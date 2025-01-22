@@ -1,24 +1,17 @@
 import fs from "fs";
 import path from "path";
-import {
-  SynchronizationStep,
-  SynchronizationStepOptions,
-} from "../../../util/synchronization-step";
+import { SynchronizationStep } from "../../../util/synchronization-step";
 
+import { red } from "colors/safe";
 import { getImportsDirectory, logger } from "../../../util/utils";
 import { SyncUIData } from "./sync-ui";
-import { red } from "colors/safe";
 
-export interface SyncSlotsParameters extends SyncUIData {
+export interface SyncSlotsparams extends SyncUIData {
   uiName: string;
 }
 
-export class SyncSlots implements SynchronizationStep<SyncSlotsParameters> {
-  synchronize(
-    values: any,
-    parameters: SyncSlotsParameters,
-    { env, dry: dryRun }: SynchronizationStepOptions
-  ): void {
+export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
+  synchronize(values: any, { env, dry, ...params }: SyncSlotsparams): void {
     let importsDirectory = getImportsDirectory(
       "./imports/product-store/slots",
       env
@@ -32,7 +25,7 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsParameters> {
     const slots = values.app.operator.slot.specs;
 
     for (const [key, spec] of Object.entries(slots) as [string, any][]) {
-      const fileName = `${parameters.productName}_${parameters.uiName}_${key}.json`;
+      const fileName = `${params.productName}_${params.uiName}_${key}.json`;
       const filePath = path.join(importsDirectory, fileName);
 
       const jsonContent = {
@@ -42,7 +35,7 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsParameters> {
         undeployed: false,
       };
 
-      if (dryRun) {
+      if (dry) {
         logger.info(
           `Dry Run: Would write to ${filePath} with content:`,
           JSON.stringify(jsonContent, null, 2)
@@ -57,12 +50,11 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsParameters> {
 
   removeSynchronization(
     values: any,
-    input: SyncSlotsParameters,
-    options: SynchronizationStepOptions
+    { env, dry, ...params }: SyncSlotsparams
   ): void {
     let importsDirectory = getImportsDirectory(
       "./imports/product-store/slots",
-      options.env
+      env
     );
 
     if (!values.app || !values.app.operator || !values.app.operator.slot) {
@@ -73,10 +65,10 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsParameters> {
     const slots = values.app.operator.slot.specs;
 
     for (const key of Object.keys(slots)) {
-      const fileName = `${input.productName}_${input.uiName}_${key}.json`;
+      const fileName = `${params.productName}_${params.uiName}_${key}.json`;
       const filePath = path.join(importsDirectory, fileName);
 
-      if (options.dry) {
+      if (dry) {
         logger.info(`Dry Run: Would remove file at ${filePath}`);
       } else {
         if (fs.existsSync(filePath)) {

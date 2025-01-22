@@ -1,25 +1,21 @@
+import { red } from "colors/safe";
 import fs from "fs";
 import path from "path";
-import {
-  SynchronizationStep,
-  SynchronizationStepOptions,
-} from "../../../util/synchronization-step";
+import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getImportsDirectory, logger } from "../../../util/utils";
-import { SharedData } from "./shared-data";
-import { red } from "colors/safe";
+import { SharedSyncData } from "../sync-command";
 
-export interface SyncPermissionsParameters extends SharedData {
+export interface SyncPermissionsparams extends SharedSyncData {
   customName: string;
   roleName: string;
 }
 
 export class SyncPermissions
-  implements SynchronizationStep<SyncPermissionsParameters>
+  implements SynchronizationStep<SyncPermissionsparams>
 {
   synchronize(
     values: any,
-    parameters: SyncPermissionsParameters,
-    { dry: dryRun, env }: SynchronizationStepOptions
+    { env, dry, ...params }: SyncPermissionsparams
   ): void {
     let importsDir = getImportsDirectory("./imports/permissions", env);
 
@@ -36,13 +32,13 @@ export class SyncPermissions
       );
       return;
     }
-    const fileName = `${parameters.productName}_${parameters.customName}.json`;
+    const fileName = `${params.productName}_${params.customName}.json`;
     const filePath = path.join(importsDir, fileName);
 
     const permissionFile: {
       name: string;
       permissions: { resource: string; action: string }[];
-    } = { name: parameters.customName, permissions: [] };
+    } = { name: params.customName, permissions: [] };
 
     // Build permissions array
     for (const [resource, uiPermissions] of Object.entries(
@@ -56,7 +52,7 @@ export class SyncPermissions
       );
     }
 
-    if (dryRun) {
+    if (dry) {
       logger.info(
         `Dry Run: Would write to ${filePath} with content:`,
         JSON.stringify(permissionFile, null, 2)
@@ -79,17 +75,17 @@ export class SyncPermissions
     const assignments = JSON.parse(assignmentsFile);
 
     // Section for product in assignments
-    if (!assignments.assignments[parameters.productName]) {
-      assignments.assignments[parameters.productName] = {};
+    if (!assignments.assignments[params.productName]) {
+      assignments.assignments[params.productName] = {};
     }
-    const productSection = assignments.assignments[parameters.productName];
+    const productSection = assignments.assignments[params.productName];
     // Section for UI in product section
-    if (!productSection[parameters.customName]) {
-      productSection[parameters.customName] = {};
+    if (!productSection[params.customName]) {
+      productSection[params.customName] = {};
     }
-    const uiSection = productSection[parameters.customName];
+    const uiSection = productSection[params.customName];
     // Target role
-    const targetRole = parameters.roleName;
+    const targetRole = params.roleName;
     // Clear & Set permissions
     uiSection[targetRole] = {};
     for (const [resource, uiPermissions] of Object.entries(
@@ -98,7 +94,7 @@ export class SyncPermissions
       uiSection[targetRole][resource] = Object.keys(uiPermissions);
     }
 
-    if (dryRun) {
+    if (dry) {
       logger.info(
         `Dry Run: Would write to ${assignmentsFilePath} with content:`,
         JSON.stringify(assignments, null, 2)
@@ -115,15 +111,14 @@ export class SyncPermissions
 
   removeSynchronization(
     _: any,
-    input: SyncPermissionsParameters,
-    options: SynchronizationStepOptions
+    { env, dry, ...params }: SyncPermissionsparams
   ): void {
-    let importsDir = getImportsDirectory("./imports/permissions", options.env);
-    const fileName = `${input.productName}_${input.customName}.json`;
+    let importsDir = getImportsDirectory("./imports/permissions", env);
+    const fileName = `${params.productName}_${params.customName}.json`;
     const filePath = path.join(importsDir, fileName);
 
     if (fs.existsSync(filePath)) {
-      if (options.dry) {
+      if (dry) {
         logger.info(`Dry Run: Would remove file at ${filePath}`);
       } else {
         fs.unlinkSync(filePath);
@@ -132,10 +127,7 @@ export class SyncPermissions
     }
 
     // Remove assignments
-    let assignmentsDir = getImportsDirectory(
-      "./imports/assignments",
-      options.env
-    );
+    let assignmentsDir = getImportsDirectory("./imports/assignments", env);
     const assignmentsFilePath = path.join(assignmentsDir, "onecx.json");
 
     if (!fs.existsSync(assignmentsFilePath)) {
@@ -148,33 +140,33 @@ export class SyncPermissions
     const assignments = JSON.parse(assignmentsFile);
 
     if (
-      assignments.assignments[input.productName] &&
-      assignments.assignments[input.productName][input.customName] &&
-      assignments.assignments[input.productName][input.customName][
-        input.roleName
+      assignments.assignments[params.productName] &&
+      assignments.assignments[params.productName][params.customName] &&
+      assignments.assignments[params.productName][params.customName][
+        params.roleName
       ]
     ) {
-      if (options.dry) {
+      if (dry) {
         logger.info(
-          `Dry Run: Would remove assignments for role ${input.roleName} in UI ${input.customName} for product ${input.productName}`
+          `Dry Run: Would remove assignments for role ${params.roleName} in UI ${params.customName} for product ${params.productName}`
         );
       } else {
         // Delete assignments for role
-        delete assignments.assignments[input.productName][input.customName][
-          input.roleName
+        delete assignments.assignments[params.productName][params.customName][
+          params.roleName
         ];
         // Cleanup empty sections
         if (
           Object.keys(
-            assignments.assignments[input.productName][input.customName]
+            assignments.assignments[params.productName][params.customName]
           ).length === 0
         ) {
-          delete assignments.assignments[input.productName][input.customName];
+          delete assignments.assignments[params.productName][params.customName];
         }
         if (
-          Object.keys(assignments.assignments[input.productName]).length === 0
+          Object.keys(assignments.assignments[params.productName]).length === 0
         ) {
-          delete assignments.assignments[input.productName];
+          delete assignments.assignments[params.productName];
         }
         fs.writeFileSync(
           assignmentsFilePath,

@@ -1,19 +1,19 @@
 import fs from "fs";
 import yaml from "js-yaml";
-import { OnecxCommand } from "../../onecx-command";
+import { logger } from "../../../util/utils";
 import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncPermissions } from "../shared/sync-permissions";
 import { SyncProducts } from "../shared/sync-products";
-import { logger } from "../../../util/utils";
+import { SharedSyncData, SyncCommand } from "../sync-command";
 
-export interface SyncBFFData {
+export interface SyncBFFData extends SharedSyncData {
   productName: string;
   pathToValues: string;
   basePath: string;
 }
 
-export class SyncBFFCommand implements OnecxCommand<SyncBFFData> {
-  run(data: SyncBFFData, options: { [key: string]: string }): void {
+export class SyncBFFCommand implements SyncCommand<SyncBFFData> {
+  run(data: SyncBFFData): void {
     logger.info("Syncing BFF...");
 
     // Validate if the values file exists
@@ -25,44 +25,32 @@ export class SyncBFFCommand implements OnecxCommand<SyncBFFData> {
     const values = yaml.load(valuesFile) as any;
 
     // Check if repository is provided or custom name is provided
-    if (!values.app.image.repository && !options["name"]) {
+    if (!values.app.image.repository && !data.name) {
       throw new Error(
         "No repository found in values file and no custom name provided."
       );
     }
-    let bffName = options["name"];
+    let bffName = data.name ?? "";
     if (values.app.image.repository) {
       bffName = values.app.image.repository.split("/").pop();
     }
 
     // Permissions
-    new SyncPermissions().synchronize(
-      values,
-      {
-        ...data,
-        customName: bffName,
-        roleName: options["role"],
-      },
-      options
-    );
+    new SyncPermissions().synchronize(values, {
+      ...data,
+      customName: bffName,
+      roleName: data.role,
+    });
     // Microservices
-    new SyncMicroservices().synchronize(
-      values,
-      {
-        ...data,
-        customName: bffName,
-      },
-      options
-    );
+    new SyncMicroservices().synchronize(values, {
+      ...data,
+      customName: bffName,
+    });
     // Products
-    new SyncProducts().synchronize(
-      values,
-      {
-        ...data,
-        icon: options["icon"],
-      },
-      options
-    );
+    new SyncProducts().synchronize(values, {
+      ...data,
+      icon: data.icon,
+    });
 
     logger.info("BFF synchronized successfully.");
   }

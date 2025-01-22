@@ -2,15 +2,14 @@
 
 import { Argument, Command } from "commander"; // add this line
 
+import { ManageMenuEntryCommand } from "./commands/menu/menu-entry";
+import { RemoveSyncBFFCommand } from "./commands/sync/bff/remove-sync-bff";
+import { SyncBFFCommand } from "./commands/sync/bff/sync-bff";
 import { RemoveSyncSVCCommand } from "./commands/sync/svc/remove-sync-svc";
 import { SyncSVCCommand } from "./commands/sync/svc/sync-svc";
 import { RemoveSyncUICommand } from "./commands/sync/ui/remove-sync-ui";
 import { SyncUICommand } from "./commands/sync/ui/sync-ui";
-import * as colors from "colors/safe";
 import { logger } from "./util/utils";
-import { RemoveSyncBFFCommand } from "./commands/sync/bff/remove-sync-bff";
-import { SyncBFFCommand } from "./commands/sync/bff/sync-bff";
-import { ManageMenuEntryCommand } from "./commands/menu/menu-entry";
 
 //add the following line
 const program = new Command();
@@ -52,14 +51,12 @@ cli
       logger.verbose(`Product name: ${productName}`);
       logger.verbose(`Base path: ${basePath}`);
       logger.verbose(`Path to values: ${pathToValues}`);
-      getCommandForType(type, options.remove).run(
-        {
-          pathToValues,
-          productName,
-          basePath,
-        },
-        options
-      );
+      getCommandForType(type, options.remove).run({
+        pathToValues,
+        productName,
+        basePath,
+        ...options,
+      });
     } catch (error: any) {
       logger.error(error.message);
     }
@@ -92,16 +89,13 @@ cli
       logger.verbose(`Name: ${name}`);
       logger.verbose(`App ID: ${appId}`);
 
-      new ManageMenuEntryCommand().run(
-        {
-          operation,
-          appId,
-          url,
-          name,
-          badge: options.badge,
-        },
-        options
-      );
+      new ManageMenuEntryCommand().run({
+        operation,
+        appId,
+        url,
+        name,
+        ...options,
+      });
     } catch (error: any) {
       logger.error(error.message);
     }

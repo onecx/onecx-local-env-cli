@@ -1,43 +1,34 @@
 import fs from "fs";
 import path from "path";
-import {
-  SynchronizationStep,
-  SynchronizationStepOptions,
-} from "../../../util/synchronization-step";
+import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getImportsDirectory, logger } from "../../../util/utils";
-import { SharedData } from "./shared-data";
+import { SharedSyncData } from "../sync-command";
 
-export interface SyncProductsParameters extends SharedData {
+export interface SyncProductsParams extends SharedSyncData {
   icon: string;
   basePath: string;
 }
 
-export class SyncProducts
-  implements SynchronizationStep<SyncProductsParameters>
-{
-  synchronize(
-    _: any,
-    parameters: SyncProductsParameters,
-    { dry: dryRun, env }: SynchronizationStepOptions
-  ): void {
+export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
+  synchronize(_: any, { env, dry, ...params }: SyncProductsParams): void {
     let importsDir = getImportsDirectory(
       "./imports/product-store/products/",
       env
     );
 
     // Target file
-    const filePath = path.resolve(importsDir, `${parameters.productName}.json`);
+    const filePath = path.resolve(importsDir, `${params.productName}.json`);
 
     // Product JSON
     const product = {
       version: "xxx",
-      description: parameters.productName.replace(/-/g, " "),
-      basePath: parameters.basePath,
-      displayName: parameters.productName.replace(/-/g, " "),
-      iconName: parameters.icon,
+      description: params.productName.replace(/-/g, " "),
+      basePath: params.basePath,
+      displayName: params.productName.replace(/-/g, " "),
+      iconName: params.icon,
     };
 
-    if (dryRun) {
+    if (dry) {
       logger.info(
         `Dry Run: Would write to ${filePath} with content:`,
         JSON.stringify(product, null, 2)
@@ -51,17 +42,16 @@ export class SyncProducts
 
   removeSynchronization(
     _: any,
-    input: SyncProductsParameters,
-    options: SynchronizationStepOptions
+    { env, dry, ...params }: SyncProductsParams
   ): void {
     let importsDir = getImportsDirectory(
       "./imports/product-store/products/",
-      options.env
+      env
     );
 
-    const filePath = path.resolve(importsDir, `${input.productName}.json`);
+    const filePath = path.resolve(importsDir, `${params.productName}.json`);
 
-    if (options.dry) {
+    if (dry) {
       logger.info(`Dry Run: Would remove file at ${filePath}`);
     } else {
       if (fs.existsSync(filePath)) {

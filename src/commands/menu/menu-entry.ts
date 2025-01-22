@@ -9,19 +9,18 @@ export interface ManageMenuEntryData {
   name: string;
   appId: string;
   badge: string;
+  env: string;
+  dry: boolean;
 }
 
 export class ManageMenuEntryCommand
   implements OnecxCommand<ManageMenuEntryData>
 {
-  run(data: ManageMenuEntryData, options: { [key: string]: string }): void {
+  run(data: ManageMenuEntryData): void {
     logger.info("Creating menu entry...");
 
     // Validate imports directory exists
-    let importsDirectory = getImportsDirectory(
-      "./imports/workspace",
-      options.env
-    );
+    let importsDirectory = getImportsDirectory("./imports/workspace", data.env);
     if (!fs.existsSync(importsDirectory)) {
       throw new Error(
         `Imports directory not found at path: ${importsDirectory}`
@@ -66,7 +65,7 @@ export class ManageMenuEntryCommand
     }
 
     workspace.workspaces.admin.menuItems = menuItems;
-    if (options.dry) {
+    if (data.dry) {
       logger.info(
         `Dry Run: Would write to ${workspaceFilePath} with content:`,
         JSON.stringify(workspace, null, 2)

@@ -1,9 +1,6 @@
 import fs from "fs";
 import path from "path";
-import {
-  SynchronizationStep,
-  SynchronizationStepOptions,
-} from "../../../util/synchronization-step";
+import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getImportsDirectory, logger } from "../../../util/utils";
 import { SyncUIData } from "./sync-ui";
 
@@ -16,8 +13,7 @@ export class SyncWorkspace
 {
   synchronize(
     values: any,
-    parameters: SyncWorkspacesParameters,
-    { dry: dryRun, env }: SynchronizationStepOptions
+    { env, dry, ...params }: SyncWorkspacesParameters
   ): void {
     let importsDirectory = getImportsDirectory("./imports/workspace/", env);
 
@@ -39,7 +35,7 @@ export class SyncWorkspace
     let existingProducts = workspace.workspaces.admin.products;
     // Remove existing product if it exists
     existingProducts = existingProducts.filter(
-      (product: any) => product.productName !== parameters.productName
+      (product: any) => product.productName !== params.productName
     );
 
     // Create new product
@@ -48,8 +44,8 @@ export class SyncWorkspace
       baseUrl: string;
       microfrontends: { appId: any; basePath: string }[];
     } = {
-      productName: parameters.productName,
-      baseUrl: parameters.basePath,
+      productName: params.productName,
+      baseUrl: params.basePath,
       microfrontends: [],
     };
 
@@ -69,7 +65,7 @@ export class SyncWorkspace
       for (let requiredField of ["remoteName"]) {
         if (!spec[requiredField]) {
           logger.warning(
-            `Missing required field ${requiredField} in microfrontend spec ${key}, this can cause issues.`
+            `Missing field ${requiredField} in microfrontend spec ${key}, this can cause issues.`
           );
         }
       }
@@ -78,7 +74,7 @@ export class SyncWorkspace
     existingProducts.push(newProduct);
     workspace.workspaces.admin.products = existingProducts;
 
-    if (dryRun) {
+    if (dry) {
       logger.info(
         `Dry Run: Would write to ${workspaceFilePath} with content:`,
         JSON.stringify(workspace, null, 2)
@@ -92,10 +88,8 @@ export class SyncWorkspace
 
   removeSynchronization(
     values: any,
-    input: SyncWorkspacesParameters,
-    options: SynchronizationStepOptions
+    { env, dry, ...params }: SyncWorkspacesParameters
   ): void {
-    const { dry: dryRun, env } = options;
     let importsDirectory = getImportsDirectory("./imports/workspace/", env);
 
     if (
@@ -114,12 +108,12 @@ export class SyncWorkspace
     let existingProducts = workspace.workspaces.admin.products;
     // Remove product if it exists
     existingProducts = existingProducts.filter(
-      (product: any) => product.productName !== input.productName
+      (product: any) => product.productName !== params.productName
     );
 
     workspace.workspaces.admin.products = existingProducts;
 
-    if (dryRun) {
+    if (dry) {
       logger.info(
         `Dry Run: Would write to ${workspaceFilePath} with content:`,
         JSON.stringify(workspace, null, 2)
