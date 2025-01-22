@@ -2,10 +2,13 @@
   "name": "onecx-local-env-cli",
   "version": "1.0.0",
   "description": "A CLI to interact with onecx-local-env",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "npx tsc",
     "start": "npm run build && node dist/index.js"
+  },
+  "bin": {
+    "onecx-local-env-cli": "dist/index.js"
   },
   "author": "",
   "license": "ISC",

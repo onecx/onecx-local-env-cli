@@ -1,3 +1,5 @@
+#! /usr/bin/env node
+
 import { Argument, Command } from "commander"; // add this line
 import { RemoveSyncBFFCommand } from "./commands/sync/bff/remove-sync-bff";
 import { SyncBFFCommand } from "./commands/sync/bff/sync-bff";
