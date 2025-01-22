@@ -7,6 +7,7 @@ import {
 
 import { getImportsDirectory, logger } from "../../../util/utils";
 import { SyncUIData } from "./sync-ui";
+import { red } from "colors/safe";
 
 export interface SyncSlotsParameters extends SyncUIData {
   uiName: string;
@@ -65,7 +66,7 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsParameters> {
     );
 
     if (!values.app || !values.app.operator || !values.app.operator.slot) {
-      logger.info("No slots found in values file. Skipping removal.");
+      logger.info("Slots removed successfully.");
       return;
     }
 
@@ -80,13 +81,11 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsParameters> {
       } else {
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
-          logger.info(`Removed file at ${filePath}`);
-        } else {
-          logger.info(`File not found at ${filePath}, skipping removal.`);
+          logger.info(red(`- ${filePath}`));
         }
       }
     }
 
-    logger.info("Slots removal completed successfully.");
+    logger.info("Slots removed successfully.");
   }
 }

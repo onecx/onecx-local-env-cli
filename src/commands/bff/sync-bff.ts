@@ -1,10 +1,10 @@
 import fs from "fs";
 import yaml from "js-yaml";
-import { OnecxCommand } from "../../onecx-command";
-import { SyncMicroservices } from "../shared/sync-microservices";
-import { SyncPermissions } from "../shared/sync-permissions";
-import { SyncProducts } from "../shared/sync-products";
-import { logger } from "../../../util/utils";
+import { OnecxCommand } from "../onecx-command";
+import { SyncMicroservices } from "../sync/shared/sync-microservices";
+import { SyncPermissions } from "../sync/shared/sync-permissions";
+import { SyncProducts } from "../sync/shared/sync-products";
+import { logger } from "../../util/utils";
 
 export interface SyncBFFData {
   productName: string;
@@ -12,9 +12,9 @@ export interface SyncBFFData {
   basePath: string;
 }
 
-export class RemoveSyncBFFCommand implements OnecxCommand<SyncBFFData> {
+export class SyncBFFCommand implements OnecxCommand<SyncBFFData> {
   run(data: SyncBFFData, options: { [key: string]: string }): void {
-    logger.info("Remove synchronized BFF...");
+    logger.info("Syncing BFF...");
 
     // Validate if the values file exists
     if (!fs.existsSync(data.pathToValues)) {
@@ -36,7 +36,7 @@ export class RemoveSyncBFFCommand implements OnecxCommand<SyncBFFData> {
     }
 
     // Permissions
-    new SyncPermissions().removeSynchronization(
+    new SyncPermissions().synchronize(
       values,
       {
         ...data,
@@ -46,7 +46,7 @@ export class RemoveSyncBFFCommand implements OnecxCommand<SyncBFFData> {
       options
     );
     // Microservices
-    new SyncMicroservices().removeSynchronization(
+    new SyncMicroservices().synchronize(
       values,
       {
         ...data,
@@ -55,7 +55,7 @@ export class RemoveSyncBFFCommand implements OnecxCommand<SyncBFFData> {
       options
     );
     // Products
-    new SyncProducts().removeSynchronization(
+    new SyncProducts().synchronize(
       values,
       {
         ...data,
@@ -64,6 +64,6 @@ export class RemoveSyncBFFCommand implements OnecxCommand<SyncBFFData> {
       options
     );
 
-    logger.info("BFF removed successfully.");
+    logger.info("BFF synchronized successfully.");
   }
 }

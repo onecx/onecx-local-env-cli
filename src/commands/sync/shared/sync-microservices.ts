@@ -6,6 +6,7 @@ import {
 } from "../../../util/synchronization-step";
 import { getImportsDirectory, logger } from "../../../util/utils";
 import { SharedData } from "./shared-data";
+import { red } from "colors/safe";
 
 export interface SyncMicroservicesParameters extends SharedData {
   customName: string;
@@ -64,12 +65,10 @@ export class SyncMicroservices
     } else {
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
-        logger.info(`File ${filePath} removed successfully.`);
-      } else {
-        logger.info(`File ${filePath} does not exist.`);
+        logger.info(red(`- ${filePath}`));
       }
     }
 
-    logger.info("Microservices removal completed successfully.");
+    logger.info("Microservices removed successfully.");
   }
 }

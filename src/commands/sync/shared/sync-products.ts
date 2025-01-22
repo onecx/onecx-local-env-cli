@@ -67,10 +67,7 @@ export class SyncProducts
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
         logger.info("Product removed successfully.");
-      } else {
-        logger.info("Product file does not exist.");
       }
     }
-    logger.info("Product removal completed successfully.");
   }
 }

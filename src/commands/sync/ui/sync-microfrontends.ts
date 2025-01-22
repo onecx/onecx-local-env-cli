@@ -41,7 +41,7 @@ export class SyncMicrofrontends
       string,
       any
     ][]) {
-      const fileName = `${parameters.productName}_${parameters.uiName}-${key}.json`;
+      const fileName = `${parameters.productName}_${parameters.uiName}_${key}.json`;
       const filePath = path.join(importsDirectory, fileName);
 
       const jsonContent = {
@@ -59,6 +59,20 @@ export class SyncMicrofrontends
         deprecated: false,
         undeployed: false,
       };
+
+      for (let requiredField of [
+        "remoteName",
+        "remoteEntry",
+        "exposedModule",
+        "tagName",
+        "type",
+      ]) {
+        if (!spec[requiredField]) {
+          logger.warning(
+            `Missing required field ${requiredField} in microfrontend spec ${key}, this can cause issues.`
+          );
+        }
+      }
 
       if (dryRun) {
         logger.info(
@@ -88,7 +102,7 @@ export class SyncMicrofrontends
       !values.app.operator ||
       !values.app.operator.microfrontend
     ) {
-      logger.info("No microfrontends found in values file. Skipping removal.");
+      logger.info("No microfrontends found in values file. Skipping.");
       return;
     }
 
@@ -104,11 +118,9 @@ export class SyncMicrofrontends
         } else {
           fs.unlinkSync(filePath);
         }
-      } else {
-        logger.info(`File ${filePath} does not exist. Skipping.`);
       }
     }
 
-    logger.info("Microfrontends removal completed successfully.");
+    logger.info("Microfrontends removed successfully.");
   }
 }

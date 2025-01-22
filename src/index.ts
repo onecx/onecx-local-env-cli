@@ -1,8 +1,8 @@
 #! /usr/bin/env node
 
 import { Argument, Command } from "commander"; // add this line
-import { RemoveSyncBFFCommand } from "./commands/sync/bff/remove-sync-bff";
-import { SyncBFFCommand } from "./commands/sync/bff/sync-bff";
+import { RemoveSyncBFFCommand } from "./commands/bff/remove-sync-bff";
+import { SyncBFFCommand } from "./commands/bff/sync-bff";
 import { RemoveSyncSVCCommand } from "./commands/sync/svc/remove-sync-svc";
 import { SyncSVCCommand } from "./commands/sync/svc/sync-svc";
 import { RemoveSyncUICommand } from "./commands/sync/ui/remove-sync-ui";

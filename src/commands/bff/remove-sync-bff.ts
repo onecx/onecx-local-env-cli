@@ -1,10 +1,10 @@
 import fs from "fs";
 import yaml from "js-yaml";
-import { OnecxCommand } from "../../onecx-command";
-import { SyncMicroservices } from "../shared/sync-microservices";
-import { SyncPermissions } from "../shared/sync-permissions";
-import { SyncProducts } from "../shared/sync-products";
-import { logger } from "../../../util/utils";
+import { OnecxCommand } from "../onecx-command";
+import { SyncMicroservices } from "../sync/shared/sync-microservices";
+import { SyncPermissions } from "../sync/shared/sync-permissions";
+import { SyncProducts } from "../sync/shared/sync-products";
+import { logger } from "../../util/utils";
 
 export interface SyncBFFData {
   productName: string;
@@ -64,6 +64,6 @@ export class RemoveSyncBFFCommand implements OnecxCommand<SyncBFFData> {
       options
     );
 
-    logger.info("BFF removed successfully.");
+    logger.info("Removal of synchronized BFF successfull.");
   }
 }

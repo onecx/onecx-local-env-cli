@@ -6,6 +6,7 @@ import {
 } from "../../../util/synchronization-step";
 import { getImportsDirectory, logger } from "../../../util/utils";
 import { SharedData } from "./shared-data";
+import { red } from "colors/safe";
 
 export interface SyncPermissionsParameters extends SharedData {
   customName: string;
@@ -113,7 +114,7 @@ export class SyncPermissions
   }
 
   removeSynchronization(
-    values: any,
+    _: any,
     input: SyncPermissionsParameters,
     options: SynchronizationStepOptions
   ): void {
@@ -126,10 +127,8 @@ export class SyncPermissions
         logger.info(`Dry Run: Would remove file at ${filePath}`);
       } else {
         fs.unlinkSync(filePath);
-        logger.info(`Removed file at ${filePath}`);
+        logger.info(red(`- ${filePath}`));
       }
-    } else {
-      logger.info(`File not found at ${filePath}, nothing to remove.`);
     }
 
     // Remove assignments
@@ -160,23 +159,30 @@ export class SyncPermissions
           `Dry Run: Would remove assignments for role ${input.roleName} in UI ${input.customName} for product ${input.productName}`
         );
       } else {
+        // Delete assignments for role
         delete assignments.assignments[input.productName][input.customName][
           input.roleName
         ];
+        // Cleanup empty sections
+        if (
+          Object.keys(
+            assignments.assignments[input.productName][input.customName]
+          ).length === 0
+        ) {
+          delete assignments.assignments[input.productName][input.customName];
+        }
+        if (
+          Object.keys(assignments.assignments[input.productName]).length === 0
+        ) {
+          delete assignments.assignments[input.productName];
+        }
         fs.writeFileSync(
           assignmentsFilePath,
           JSON.stringify(assignments, null, 2)
         );
-        logger.info(
-          `Removed assignments for role ${input.roleName} in UI ${input.customName} for product ${input.productName}`
-        );
       }
-    } else {
-      logger.info(
-        `Assignments for role ${input.roleName} in UI ${input.customName} for product ${input.productName} not found, nothing to remove.`
-      );
     }
 
-    logger.info("Permissions removal completed successfully.");
+    logger.info("Permissions removed successfully.");
   }
 }
