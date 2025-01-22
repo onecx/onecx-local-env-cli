@@ -10,6 +10,7 @@ import * as colors from "colors/safe";
 import { logger } from "./util/utils";
 import { RemoveSyncBFFCommand } from "./commands/sync/bff/remove-sync-bff";
 import { SyncBFFCommand } from "./commands/sync/bff/sync-bff";
+import { ManageMenuEntryCommand } from "./commands/menu/menu-entry";
 
 //add the following line
 const program = new Command();
@@ -56,6 +57,48 @@ cli
           pathToValues,
           productName,
           basePath,
+        },
+        options
+      );
+    } catch (error: any) {
+      logger.error(error.message);
+    }
+  });
+
+cli
+  .command("menu")
+  .addArgument(
+    new Argument("<operation>", "operation to do").choices(["create", "remove"])
+  )
+  .argument("<appId>", "The application id to link to (unique for entry)")
+  .argument("[url]", "The URL of the menu entry")
+  .argument("[name]", "The name of the menu entry")
+  .option("-e, --env <path>", "Path to the local environment", "./")
+  .option("-b, --badge <iconName>", "The badge of the menu entry", "briefcase")
+  .option("-d, --dry", "If should do a dry run", false)
+  .option("-v, --verbose", "Print verbose information", false)
+  .action((operation, appId, url, name, options) => {
+    if (options.verbose) {
+      process.env.VERBOSE = "true";
+    }
+    try {
+      logger.verbose(
+        `Running menu command with options: ${JSON.stringify(options)}`
+      );
+      url = url ?? `/${appId.toLowerCase().replace(" ", "-")}`;
+      name = name ?? appId.replace("-", " ");
+      logger.verbose(`Operation: ${operation}`);
+      logger.verbose(`URL: ${url}`);
+      logger.verbose(`Name: ${name}`);
+      logger.verbose(`App ID: ${appId}`);
+
+      new ManageMenuEntryCommand().run(
+        {
+          operation,
+          appId,
+          url,
+          name,
+          badge: options.badge,
         },
         options
       );
