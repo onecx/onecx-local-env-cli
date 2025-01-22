@@ -48,3 +48,9 @@ Options:
   -d, --dry               If should do a dry run (default: false)
   -v, --verbose           Print verbose information (default: false)
   -h, --help              display help for command
+
+
+# Local Testing & Installation
+To perform local testing you can install the CLI globally on your machine:
+Perform `npm run build && npm i -g .` inside the cli repository to build and install.
+Then the CLI is available via `onecx-local-env-cli` directly in your terminal.
