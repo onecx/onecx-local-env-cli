@@ -17,7 +17,11 @@ export class ManageMenuEntryCommand
   implements OnecxCommand<ManageMenuEntryData>
 {
   run(data: ManageMenuEntryData): void {
-    logger.info("Creating menu entry...");
+    if (data.operation === "create") {
+      logger.info("Creating menu entry...");
+    } else {
+      logger.info("Removing menu entry...");
+    }
 
     // Validate imports directory exists
     let importsDirectory = getImportsDirectory("./imports/workspace", data.env);
