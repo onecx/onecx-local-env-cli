@@ -3,8 +3,7 @@ import path from "path";
 import { getImportsDirectory, logger } from "../../util/utils";
 import { OnecxCommand } from "../onecx-command";
 
-export interface ManageMenuEntryData {
-  operation: "create" | "remove";
+export interface CreateMenuEntryData {
   url: string;
   name: string;
   appId: string;
@@ -14,15 +13,11 @@ export interface ManageMenuEntryData {
   workspace: string;
 }
 
-export class ManageMenuEntryCommand
-  implements OnecxCommand<ManageMenuEntryData>
+export class CreateMenuEntryCommand
+  implements OnecxCommand<CreateMenuEntryData>
 {
-  run(data: ManageMenuEntryData): void {
-    if (data.operation === "create") {
-      logger.info("Creating menu entry...");
-    } else {
-      logger.info("Removing menu entry...");
-    }
+  run(data: CreateMenuEntryData): void {
+    logger.info("Creating menu entry...");
 
     // Validate imports directory exists
     let importsDirectory = getImportsDirectory("./imports/workspace", data.env);
@@ -56,16 +51,14 @@ export class ManageMenuEntryCommand
       data.appId,
       data.badge
     );
-    if (!myAppsMenuEntry && data.operation === "create") {
+    if (!myAppsMenuEntry) {
       CustomApplicationMenuEntry.children.push(newEntry);
       portalMainMenu.children.push(CustomApplicationMenuEntry);
     } else {
       let menuItemsWithoutNew = myAppsMenuEntry.children.filter(
         (menuItem: any) => menuItem.key !== newEntry.key
-      );
-      if (data.operation === "create") {
-        menuItemsWithoutNew.push(newEntry);
-      }
+      );     
+      menuItemsWithoutNew.push(newEntry);      
       myAppsMenuEntry.children = menuItemsWithoutNew;
     }
 
@@ -78,16 +71,12 @@ export class ManageMenuEntryCommand
     } else {
       fs.writeFileSync(workspaceFilePath, JSON.stringify(workspace, null, 2));
     }
-
-    if (data.operation === "create") {
-      logger.info("Menu entry created successfully.");
-    } else {
-      logger.info("Menu entry removed successfully.");
-    }
+    
+    logger.info("Menu entry created successfully.");
   }
 }
 
-function createMenuEntryForApplication(
+export function createMenuEntryForApplication(
   url: string,
   name: string,
   appId: string,

@@ -2,7 +2,8 @@
 
 import { Argument, Command } from "commander"; // add this line
 
-import { ManageMenuEntryCommand } from "./commands/menu/menu-entry";
+import { CreateMenuEntryCommand } from "./commands/menu/create-menu-entry";
+import { RemoveMenuEntryCommand } from "./commands/menu/remove-menu-entry";
 import { RemoveSyncBFFCommand } from "./commands/sync/bff/remove-sync-bff";
 import { SyncBFFCommand } from "./commands/sync/bff/sync-bff";
 import { RemoveSyncSVCCommand } from "./commands/sync/svc/remove-sync-svc";
@@ -90,13 +91,21 @@ cli
       logger.verbose(`Name: ${name}`);
       logger.verbose(`App ID: ${appId}`);
 
-      new ManageMenuEntryCommand().run({
-        operation,
-        appId,
-        url,
-        name,
-        ...options,
-      });
+      if (operation === "create") {
+        new CreateMenuEntryCommand().run({
+          appId,
+          url,
+          name,
+          ...options,
+        });
+      } else {
+        new RemoveMenuEntryCommand().run({
+          appId,
+          url,
+          name,
+          ...options,
+        });
+      }
     } catch (error: any) {
       logger.error(error.message);
     }
