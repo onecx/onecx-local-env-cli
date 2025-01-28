@@ -54,7 +54,7 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
     // Permissions
     new SyncPermissions().synchronize(values, {
       ...data,
-      customName: uiName,
+      appName: uiName,
       roleName: data.role,
     });
     // Microservices

@@ -5,17 +5,17 @@ import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getImportsDirectory, logger } from "../../../util/utils";
 import { SharedSyncData } from "../sync-command";
 
-export interface SyncPermissionsparams extends SharedSyncData {
-  customName: string;
+export interface SyncPermissionsParams extends SharedSyncData {
+  appName: string;
   roleName: string;
 }
 
 export class SyncPermissions
-  implements SynchronizationStep<SyncPermissionsparams>
+  implements SynchronizationStep<SyncPermissionsParams>
 {
   synchronize(
     values: any,
-    { env, dry, ...params }: SyncPermissionsparams
+    { env, dry, ...params }: SyncPermissionsParams
   ): void {
     let importsDir = getImportsDirectory("./imports/permissions", env);
 
@@ -32,13 +32,13 @@ export class SyncPermissions
       );
       return;
     }
-    const fileName = `${params.productName}_${params.customName}.json`;
+    const fileName = `${params.productName}_${params.appName}.json`;
     const filePath = path.join(importsDir, fileName);
 
     const permissionFile: {
       name: string;
       permissions: { resource: string; action: string }[];
-    } = { name: params.customName, permissions: [] };
+    } = { name: params.appName, permissions: [] };
 
     // Build permissions array
     for (const [resource, uiPermissions] of Object.entries(
@@ -80,10 +80,10 @@ export class SyncPermissions
     }
     const productSection = assignments.assignments[params.productName];
     // Section for UI in product section
-    if (!productSection[params.customName]) {
-      productSection[params.customName] = {};
+    if (!productSection[params.appName]) {
+      productSection[params.appName] = {};
     }
-    const uiSection = productSection[params.customName];
+    const uiSection = productSection[params.appName];
     // Target role
     const targetRole = params.roleName;
     // Clear & Set permissions
@@ -111,10 +111,10 @@ export class SyncPermissions
 
   removeSynchronization(
     _: any,
-    { env, dry, ...params }: SyncPermissionsparams
+    { env, dry, ...params }: SyncPermissionsParams
   ): void {
     let importsDir = getImportsDirectory("./imports/permissions", env);
-    const fileName = `${params.productName}_${params.customName}.json`;
+    const fileName = `${params.productName}_${params.appName}.json`;
     const filePath = path.join(importsDir, fileName);
 
     if (fs.existsSync(filePath)) {
@@ -141,27 +141,27 @@ export class SyncPermissions
 
     if (
       assignments.assignments[params.productName] &&
-      assignments.assignments[params.productName][params.customName] &&
-      assignments.assignments[params.productName][params.customName][
+      assignments.assignments[params.productName][params.appName] &&
+      assignments.assignments[params.productName][params.appName][
         params.roleName
       ]
     ) {
       if (dry) {
         logger.info(
-          `Dry Run: Would remove assignments for role ${params.roleName} in UI ${params.customName} for product ${params.productName}`
+          `Dry Run: Would remove assignments for role ${params.roleName} in UI ${params.appName} for product ${params.productName}`
         );
       } else {
         // Delete assignments for role
-        delete assignments.assignments[params.productName][params.customName][
+        delete assignments.assignments[params.productName][params.appName][
           params.roleName
         ];
         // Cleanup empty sections
         if (
           Object.keys(
-            assignments.assignments[params.productName][params.customName]
+            assignments.assignments[params.productName][params.appName]
           ).length === 0
         ) {
-          delete assignments.assignments[params.productName][params.customName];
+          delete assignments.assignments[params.productName][params.appName];
         }
         if (
           Object.keys(assignments.assignments[params.productName]).length === 0

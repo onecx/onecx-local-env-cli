@@ -38,7 +38,7 @@ export class RemoveSyncBFFCommand implements SyncCommand<SyncBFFData> {
     // Permissions
     new SyncPermissions().removeSynchronization(values, {
       ...data,
-      customName: bffName,
+      appName: bffName,
       roleName: data.role,
     });
     // Microservices

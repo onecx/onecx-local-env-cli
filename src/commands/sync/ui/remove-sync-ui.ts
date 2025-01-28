@@ -44,7 +44,7 @@ export class RemoveSyncUICommand implements SyncCommand<SyncUIData> {
     // Permissions
     new SyncPermissions().removeSynchronization(values, {
       ...data,
-      customName: uiName,
+      appName: uiName,
       roleName: data.role,
     });
     // Microservices

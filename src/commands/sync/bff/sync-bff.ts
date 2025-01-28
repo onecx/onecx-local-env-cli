@@ -38,7 +38,7 @@ export class SyncBFFCommand implements SyncCommand<SyncBFFData> {
     // Permissions
     new SyncPermissions().synchronize(values, {
       ...data,
-      customName: bffName,
+      appName: bffName,
       roleName: data.role,
     });
     // Microservices
