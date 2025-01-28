@@ -40,10 +40,60 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
     logger.info("Product synchronized successfully.");
   }
 
+  checkProductInUse(productName: string, env: string): boolean {
+    let importsDir = getImportsDirectory("./imports/", env);
+
+    /**
+     * For microservices, permissions, microfrontends and slots we can check if a file exist
+     * where the productName is the prefix of the file name. We though need to ignore the product
+     * file itself, where the name is the full file name.
+     */
+
+    const files = fs.readdirSync(importsDir);
+    let existingFile = files.find(
+      (file) => file.startsWith(productName) && file !== `${productName}.json`
+    );
+    if (existingFile) {
+      logger.info(
+        `Product ${productName} is still in use by file ${existingFile}, skipping removal.`
+      );
+      return true;
+    }
+
+    /**
+     * For assignments
+     */
+    let assignmentsDir = getImportsDirectory("./imports/assignments", env);
+    const assignmentsFilePath = path.join(assignmentsDir, "onecx.json");
+
+    if (!fs.existsSync(assignmentsFilePath)) {
+      throw new Error(
+        `Assignments file not found at path: ${assignmentsFilePath}`
+      );
+    }
+
+    const assignmentsFile = fs.readFileSync(assignmentsFilePath, "utf8");
+    const assignments = JSON.parse(assignmentsFile);
+
+    // Section for product in assignments
+    if (assignments.assignments[productName] !== undefined) {
+      logger.info(
+        `Product ${productName} is still in use by assignments, skipping removal.`
+      );
+      return true;
+    }
+
+    return false;
+  }
+
   removeSynchronization(
     _: any,
     { env, dry, ...params }: SyncProductsParams
   ): void {
+    const inUse = this.checkProductInUse(params.productName, env);
+    if (inUse) {
+      return;
+    }
     let importsDir = getImportsDirectory(
       "./imports/product-store/products/",
       env
