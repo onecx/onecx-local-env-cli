@@ -11,6 +11,7 @@ export interface CreateMenuEntryData {
   env: string;
   dry: boolean;
   workspace: string;
+  roles: string[];
 }
 
 export class CreateMenuEntryCommand
@@ -27,7 +28,10 @@ export class CreateMenuEntryCommand
       );
     }
 
-    const workspaceFilePath = path.join(importsDirectory, `onecx_${data.workspace}.json`);
+    const workspaceFilePath = path.join(
+      importsDirectory,
+      `onecx_${data.workspace}.json`
+    );
     const workspaceFile = fs.readFileSync(workspaceFilePath, "utf8");
     const workspace = JSON.parse(workspaceFile);
     const menuItems = workspace.workspaces[data.workspace].menuItems;
@@ -49,16 +53,19 @@ export class CreateMenuEntryCommand
       data.url,
       data.name,
       data.appId,
-      data.badge
+      data.badge,
+      data.roles
     );
     if (!myAppsMenuEntry) {
-      CustomApplicationMenuEntry.children.push(newEntry);
-      portalMainMenu.children.push(CustomApplicationMenuEntry);
-    } else {
+      const customEntry = getCustomApplicationMenuEntry(data.roles);
+      customEntry.children.push(newEntry);
+      portalMainMenu.children.push(customEntry);
+    } else {      
       let menuItemsWithoutNew = myAppsMenuEntry.children.filter(
         (menuItem: any) => menuItem.key !== newEntry.key
-      );     
-      menuItemsWithoutNew.push(newEntry);      
+      );
+      menuItemsWithoutNew.push(newEntry);
+      myAppsMenuEntry.roles = data.roles;
       myAppsMenuEntry.children = menuItemsWithoutNew;
     }
 
@@ -71,7 +78,7 @@ export class CreateMenuEntryCommand
     } else {
       fs.writeFileSync(workspaceFilePath, JSON.stringify(workspace, null, 2));
     }
-    
+
     logger.info("Menu entry created successfully.");
   }
 }
@@ -80,7 +87,8 @@ export function createMenuEntryForApplication(
   url: string,
   name: string,
   appId: string,
-  badge: string
+  badge: string,
+  roles: string[]
 ): MenuEntry {
   return {
     key: `CUSTOM_${appId.toUpperCase().replace(/(-| )/g, "_")}`,
@@ -95,12 +103,12 @@ export function createMenuEntryForApplication(
       en: name,
       de: name,
     },
-    roles: ["onecx-admin"],
+    roles,
     children: [],
   };
 }
 
-const CustomApplicationMenuEntry: MenuEntry = {
+const getCustomApplicationMenuEntry = (roles: string[]): MenuEntry => ({
   key: "CORE_CUSTOM_APP",
   name: "Custom Applications",
   url: "",
@@ -112,9 +120,9 @@ const CustomApplicationMenuEntry: MenuEntry = {
     en: "Custom Applications",
     de: "Custom Applications",
   },
-  roles: ["onecx-admin"],
+  roles: roles,
   children: [],
-};
+});
 
 interface MenuEntry {
   key: string;

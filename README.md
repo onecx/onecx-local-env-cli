@@ -11,6 +11,7 @@ After it was synchronized, you need to either add the UI to the docker compose a
 ## Menu entries
 You can create menu entries, that will appear under a new "Custom Applications" top menu in the sidebar.
 The appId will be used as the unique identifier for the entry.
+When providing custom roles, these roles will be applied for this "Custom Applications" entry as well as for the created entry itself.
 
 # Commands
 
@@ -46,6 +47,7 @@ Options:
 -  -e, --env <path\>        Path to the local environment (default: "./")
 -  -b, --badge <iconName\>  The badge of the menu entry (default: "briefcase")
 -  -w, --workspace <workspace\>  The name of the workspace (default: "admin")
+-  -r, --roles <roles...>       The roles this menu entry is visible for (default: "onecx-admin")
 -  -d, --dry               If should do a dry run (default: false)
 -  -v, --verbose           Print verbose information (default: false)
 -  -h, --help              display help for command

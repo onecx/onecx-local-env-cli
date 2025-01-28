@@ -52,7 +52,8 @@ export class RemoveMenuEntryCommand
       data.url,
       data.name,
       data.appId,
-      data.badge
+      data.badge,
+      []
     );
     let menuItemsWithoutNew = myAppsMenuEntry.children.filter(
       (menuItem: any) => menuItem.key !== newEntry.key
