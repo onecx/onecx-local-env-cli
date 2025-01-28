@@ -72,6 +72,7 @@ cli
   .argument("[name]", "The name of the menu entry")
   .option("-e, --env <path>", "Path to the local environment", "./")
   .option("-b, --badge <iconName>", "The badge of the menu entry", "briefcase")
+  .option("-w, --workspace <workspace>", "The name of the workspace", "admin")
   .option("-d, --dry", "If should do a dry run", false)
   .option("-v, --verbose", "Print verbose information", false)
   .action((operation, appId, url, name, options) => {

@@ -43,8 +43,9 @@ Arguments:
   name                    The name of the menu entry
 
 Options:
--  -e, --env <path>        Path to the local environment (default: "./")
--  -b, --badge <iconName>  The badge of the menu entry (default: "briefcase")
+-  -e, --env <path\>        Path to the local environment (default: "./")
+-  -b, --badge <iconName\>  The badge of the menu entry (default: "briefcase")
+-  -w, --workspace <workspace\>  The name of the workspace (default: "admin")
 -  -d, --dry               If should do a dry run (default: false)
 -  -v, --verbose           Print verbose information (default: false)
 -  -h, --help              display help for command

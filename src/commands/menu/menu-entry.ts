@@ -11,6 +11,7 @@ export interface ManageMenuEntryData {
   badge: string;
   env: string;
   dry: boolean;
+  workspace: string;
 }
 
 export class ManageMenuEntryCommand
@@ -31,10 +32,10 @@ export class ManageMenuEntryCommand
       );
     }
 
-    const workspaceFilePath = path.join(importsDirectory, `onecx_admin.json`);
+    const workspaceFilePath = path.join(importsDirectory, `onecx_${data.workspace}.json`);
     const workspaceFile = fs.readFileSync(workspaceFilePath, "utf8");
     const workspace = JSON.parse(workspaceFile);
-    const menuItems = workspace.workspaces.admin.menuItems;
+    const menuItems = workspace.workspaces[data.workspace].menuItems;
     // Find PORTAL_MAIN_MENU
     const portalMainMenu = menuItems.find(
       (menuItem: any) => menuItem.key === "PORTAL_MAIN_MENU"
@@ -68,7 +69,7 @@ export class ManageMenuEntryCommand
       myAppsMenuEntry.children = menuItemsWithoutNew;
     }
 
-    workspace.workspaces.admin.menuItems = menuItems;
+    workspace.workspaces[data.workspace].menuItems = menuItems;
     if (data.dry) {
       logger.info(
         `Dry Run: Would write to ${workspaceFilePath} with content:`,
