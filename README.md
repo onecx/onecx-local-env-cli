@@ -1,5 +1,5 @@
 # onecx-local-env-cli
-This CLI helps you with setting up microservices in the onecx-local-env
+This CLI helps you with setting up microservices in the  [onecx-local-env](http://github.com/onecx/onecx-local-env/).
 
 # Usage
 
