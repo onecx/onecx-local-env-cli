@@ -15,39 +15,39 @@ The appId will be used as the unique identifier for the entry.
 # Commands
 
 ## sync
-Usage: onecx-local-env-cli sync [options] <type> <productName> <basePath> <pathToValues>
+Usage: **onecx-local-env-cli sync [options] <type\> <productName\> <basePath\> <pathToValues\>**
 
 Arguments:
-  type                   type of microservice (choices: "ui", "bff", "svc")
-  productName            The name of the product
-  basePath               The base path of the product
-  pathToValues           The path to the values.yaml file of the microservice
+-  type:                   type of microservice (choices: "ui", "bff", "svc")
+-  productName:            The name of the product
+-  basePath:               The base path of the product
+-  pathToValues:           The path to the values.yaml file of the microservice
 
 Options:
-  -e, --env <path>       Path to the local environment (default: "./")
-  -n, --name <name>      Custom name for the UI, if repository should not be used
-  -r, --role <role>      Role name for the assignments (default: "onecx-admin")
-  -i, --icon <iconName>  The icon of the product (default: "pi-briefcase")
-  -d, --dry              If should do a dry run (default: false)
-  -R, --remove           If synchronization should be removed (default: false)
-  -v, --verbose          Print verbose information (default: false)
-  -h, --help             display help for command
+-  -e, --env <path\>:       Path to the local environment (default: "./")
+-  -n, --name <name\>:      Custom name for the UI, if repository should not be used
+-  -r, --role <role\>:      Role name for the assignments (default: "onecx-admin")
+-  -i, --icon <iconName\>:  The icon of the product (default: "pi-briefcase")
+-  -d, --dry:              If should do a dry run (default: false)
+-  -R, --remove:           If synchronization should be removed (default: false)
+-  -v, --verbose:          Print verbose information (default: false)
+-  -h, --help:             display help for command
 
 ## menu
-Usage: onecx-local-env-cli menu [options] <operation> <appId> [url] [name]
+Usage: **onecx-local-env-cli menu [options] <operation\> <appId\> [url] [name]**
 
 Arguments:
-  operation               operation to do (choices: "create", "remove")
-  appId                   The application id to link to (unique for entry)
-  url                     The URL of the menu entry
+- operation:               operation to do (choices: - "create", "remove")
+- appId:                   The application id to link to (unique for entry)
+- url:                     The URL of the menu entry
   name                    The name of the menu entry
 
 Options:
-  -e, --env <path>        Path to the local environment (default: "./")
-  -b, --badge <iconName>  The badge of the menu entry (default: "briefcase")
-  -d, --dry               If should do a dry run (default: false)
-  -v, --verbose           Print verbose information (default: false)
-  -h, --help              display help for command
+-  -e, --env <path>        Path to the local environment (default: "./")
+-  -b, --badge <iconName>  The badge of the menu entry (default: "briefcase")
+-  -d, --dry               If should do a dry run (default: false)
+-  -v, --verbose           Print verbose information (default: false)
+-  -h, --help              display help for command
 
 
 # Local Testing & Installation
