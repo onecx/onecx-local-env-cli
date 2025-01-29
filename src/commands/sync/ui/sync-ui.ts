@@ -28,7 +28,15 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
     const values = yaml.load(valuesFile) as any;
 
     // Check if repository is provided or custom name is provided
-    if (!values.app.image.repository && !data.name) {
+    if (
+      !(
+        values &&
+        values.app &&
+        values.app.image &&
+        values.app.image.repository
+      ) &&
+      !data.name
+    ) {
       throw new Error(
         "No repository found in values file and no custom name provided."
       );
