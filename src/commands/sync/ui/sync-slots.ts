@@ -3,7 +3,7 @@ import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
 
 import { red } from "colors/safe";
-import { getImportsDirectory, logger } from "../../../util/utils";
+import { getEnvDirectory, logger } from "../../../util/utils";
 import { SyncUIData } from "./sync-ui";
 
 export interface SyncSlotsparams extends SyncUIData {
@@ -12,7 +12,7 @@ export interface SyncSlotsparams extends SyncUIData {
 
 export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
   synchronize(values: any, { env, dry, ...params }: SyncSlotsparams): void {
-    let importsDirectory = getImportsDirectory(
+    let importsDirectory = getEnvDirectory(
       "./imports/product-store/slots",
       env
     );
@@ -52,7 +52,7 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
     values: any,
     { env, dry, ...params }: SyncSlotsparams
   ): void {
-    let importsDirectory = getImportsDirectory(
+    let importsDirectory = getEnvDirectory(
       "./imports/product-store/slots",
       env
     );

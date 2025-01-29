@@ -1,13 +1,13 @@
 import path from "path";
 import * as colors from "colors/safe";
 
-export function getImportsDirectory(subpath: string, env?: string): string {
-  let importsDir = path.resolve(subpath);
+export function getEnvDirectory(subpath: string, env?: string): string {
+  let envDir = path.resolve(subpath);
   if (env) {
     const localEnvPath = path.resolve(env);
-    importsDir = path.resolve(localEnvPath, subpath);
+    envDir = path.resolve(localEnvPath, subpath);
   }
-  return importsDir;
+  return envDir;
 }
 
 export const logger = {

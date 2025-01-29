@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
-import { getImportsDirectory, logger } from "../../../util/utils";
+import { getEnvDirectory, logger } from "../../../util/utils";
 
 import { red } from "colors/safe";
 import { SharedSyncData } from "../sync-command";
@@ -14,7 +14,7 @@ export class SyncMicroservices
   implements SynchronizationStep<SyncMicroservicesparams>
 {
   synchronize(_: any, { env, dry, ...params }: SyncMicroservicesparams): void {
-    let importsDir = getImportsDirectory(
+    let importsDir = getEnvDirectory(
       "./imports/product-store/microservices/",
       env
     );
@@ -45,7 +45,7 @@ export class SyncMicroservices
     _: any,
     { env, dry, ...params }: SyncMicroservicesparams
   ): void {
-    let importsDir = getImportsDirectory(
+    let importsDir = getEnvDirectory(
       "./imports/product-store/microservices/",
       env
     );

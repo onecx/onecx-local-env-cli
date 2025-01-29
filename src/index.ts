@@ -11,6 +11,7 @@ import { SyncSVCCommand } from "./commands/sync/svc/sync-svc";
 import { RemoveSyncUICommand } from "./commands/sync/ui/remove-sync-ui";
 import { SyncUICommand } from "./commands/sync/ui/sync-ui";
 import { logger } from "./util/utils";
+import { CreateDockerCommand } from "./commands/docker/create-entry";
 
 //add the following line
 export class OneCXLocalEnvCLI {
@@ -66,7 +67,7 @@ export class OneCXLocalEnvCLI {
           logger.verbose(`Product name: ${productName}`);
           logger.verbose(`Base path: ${basePath}`);
           logger.verbose(`Path to values: ${pathToValues}`);
-          this.getCommandForType(type, options.remove).run({
+          this.getSyncCommandForType(type, options.remove).run({
             pathToValues,
             productName,
             basePath,
@@ -137,10 +138,49 @@ export class OneCXLocalEnvCLI {
         }
       });
 
+    cli
+      .command("docker")
+      .argument("<name>", "The name of the custom docker compose")
+      .addArgument(
+        new Argument("<operation>", "operation to do").choices([
+          "create",
+          "remove",
+        ])
+      )
+      .argument("<appName>", "The name of the app")
+      .option("-s, --sections <sections...>", "The sections to generate", [
+        "ui",
+        "bff",
+        "svc",
+      ])
+      .option("-e, --env <path>", "Path to the local environment", "./")
+      .option("-d, --dry", "If should do a dry run", false)
+      .option("-v, --verbose", "Print verbose information", false)
+      .action((name, operation, appName, options) => {
+        if (options.verbose) {
+          process.env.VERBOSE = "true";
+        }
+        logger.verbose(
+          `Running menu command with options: ${JSON.stringify(options)}`
+        );
+        logger.verbose(`Operation: ${operation}`);
+        logger.verbose(`Name: ${name}`);
+        logger.verbose(`App Name: ${appName}`);
+
+        if (operation === "create") {
+          new CreateDockerCommand().run({
+            operation,
+            name,
+            appName,
+            ...options,
+          });
+        }
+      });
+
     return program;
   }
 
-  getCommandForType(type: "ui" | "bff" | "svc", removal: boolean = false) {
+  getSyncCommandForType(type: "ui" | "bff" | "svc", removal: boolean = false) {
     switch (type) {
       case "ui":
         return removal ? new RemoveSyncUICommand() : new SyncUICommand();

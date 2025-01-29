@@ -2,7 +2,7 @@ import { red } from "colors/safe";
 import fs from "fs";
 import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
-import { getImportsDirectory, logger } from "../../../util/utils";
+import { getEnvDirectory, logger } from "../../../util/utils";
 import { SharedSyncData } from "../sync-command";
 
 export interface SyncPermissionsParams extends SharedSyncData {
@@ -17,7 +17,7 @@ export class SyncPermissions
     values: any,
     { env, dry, ...params }: SyncPermissionsParams
   ): void {
-    let importsDir = getImportsDirectory("./imports/permissions", env);
+    let importsDir = getEnvDirectory("./imports/permissions", env);
 
     if (
       !values.app ||
@@ -62,7 +62,7 @@ export class SyncPermissions
     }
 
     // Sync assignments
-    let assignmentsDir = getImportsDirectory("./imports/assignments", env);
+    let assignmentsDir = getEnvDirectory("./imports/assignments", env);
     const assignmentsFilePath = path.join(assignmentsDir, "onecx.json");
 
     if (!fs.existsSync(assignmentsFilePath)) {
@@ -113,7 +113,7 @@ export class SyncPermissions
     _: any,
     { env, dry, ...params }: SyncPermissionsParams
   ): void {
-    let importsDir = getImportsDirectory("./imports/permissions", env);
+    let importsDir = getEnvDirectory("./imports/permissions", env);
     const fileName = `${params.productName}_${params.appName}.json`;
     const filePath = path.join(importsDir, fileName);
 
@@ -127,7 +127,7 @@ export class SyncPermissions
     }
 
     // Remove assignments
-    let assignmentsDir = getImportsDirectory("./imports/assignments", env);
+    let assignmentsDir = getEnvDirectory("./imports/assignments", env);
     const assignmentsFilePath = path.join(assignmentsDir, "onecx.json");
 
     if (!fs.existsSync(assignmentsFilePath)) {

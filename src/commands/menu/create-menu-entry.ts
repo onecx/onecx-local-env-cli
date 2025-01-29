@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { getImportsDirectory, logger } from "../../util/utils";
+import { getEnvDirectory, logger } from "../../util/utils";
 import { OnecxCommand } from "../onecx-command";
 
 export interface CreateMenuEntryData {
@@ -21,7 +21,7 @@ export class CreateMenuEntryCommand
     logger.info("Creating menu entry...");
 
     // Validate imports directory exists
-    let importsDirectory = getImportsDirectory("./imports/workspace", data.env);
+    let importsDirectory = getEnvDirectory("./imports/workspace", data.env);
     if (!fs.existsSync(importsDirectory)) {
       throw new Error(
         `Imports directory not found at path: ${importsDirectory}`

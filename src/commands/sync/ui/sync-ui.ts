@@ -1,6 +1,6 @@
 import fs from "fs";
 import yaml from "js-yaml";
-import { getImportsDirectory, logger } from "../../../util/utils";
+import { getEnvDirectory, logger } from "../../../util/utils";
 import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncPermissions } from "../shared/sync-permissions";
 import { SyncProducts } from "../shared/sync-products";
@@ -47,7 +47,7 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
     }
 
     // Validate imports directory exists
-    let importsDirectory = getImportsDirectory("./imports", data.env);
+    let importsDirectory = getEnvDirectory("./imports", data.env);
     if (!fs.existsSync(importsDirectory)) {
       throw new Error(
         `Imports directory not found at path: ${importsDirectory}`

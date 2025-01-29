@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
-import { getImportsDirectory, logger } from "../../../util/utils";
+import { getEnvDirectory, logger } from "../../../util/utils";
 import { SharedSyncData } from "../sync-command";
 
 export interface SyncProductsParams extends SharedSyncData {
@@ -11,7 +11,7 @@ export interface SyncProductsParams extends SharedSyncData {
 
 export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
   synchronize(_: any, { env, dry, ...params }: SyncProductsParams): void {
-    let importsDir = getImportsDirectory(
+    let importsDir = getEnvDirectory(
       "./imports/product-store/products/",
       env
     );
@@ -41,7 +41,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
   }
 
   checkProductInUse(productName: string, env: string): boolean {
-    let importsDir = getImportsDirectory("./imports/", env);
+    let importsDir = getEnvDirectory("./imports/", env);
 
     /**
      * For microservices, permissions, microfrontends and slots we can check if a file exist
@@ -63,7 +63,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
     /**
      * For assignments
      */
-    let assignmentsDir = getImportsDirectory("./imports/assignments", env);
+    let assignmentsDir = getEnvDirectory("./imports/assignments", env);
     const assignmentsFilePath = path.join(assignmentsDir, "onecx.json");
 
     if (!fs.existsSync(assignmentsFilePath)) {
@@ -94,7 +94,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
     if (inUse) {
       return;
     }
-    let importsDir = getImportsDirectory(
+    let importsDir = getEnvDirectory(
       "./imports/product-store/products/",
       env
     );

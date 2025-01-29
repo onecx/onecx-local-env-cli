@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
-import { getImportsDirectory, logger } from "../../../util/utils";
+import { getEnvDirectory, logger } from "../../../util/utils";
 import { SyncUIData } from "./sync-ui";
 
 export interface SyncMicrofrontendsparams extends SyncUIData {
@@ -15,7 +15,7 @@ export class SyncMicrofrontends
     values: any,
     { env, dry, ...params }: SyncMicrofrontendsparams
   ): void {
-    let importsDirectory = getImportsDirectory(
+    let importsDirectory = getEnvDirectory(
       "./imports/product-store/microfrontends",
       env
     );
@@ -87,7 +87,7 @@ export class SyncMicrofrontends
     values: any,
     { env, dry, ...params }: SyncMicrofrontendsparams
   ): void {
-    let importsDirectory = getImportsDirectory(
+    let importsDirectory = getEnvDirectory(
       "./imports/product-store/microfrontends",
       env
     );

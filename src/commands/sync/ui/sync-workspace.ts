@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
-import { getImportsDirectory, logger } from "../../../util/utils";
+import { getEnvDirectory, logger } from "../../../util/utils";
 import { SyncUIData } from "./sync-ui";
 
 export interface SyncWorkspacesParameters extends SyncUIData {
@@ -15,7 +15,7 @@ export class SyncWorkspace
     values: any,
     { env, dry, ...params }: SyncWorkspacesParameters
   ): void {
-    let importsDirectory = getImportsDirectory("./imports/workspace/", env);
+    let importsDirectory = getEnvDirectory("./imports/workspace/", env);
 
     if (
       !values.app ||
@@ -90,7 +90,7 @@ export class SyncWorkspace
     values: any,
     { env, dry, ...params }: SyncWorkspacesParameters
   ): void {
-    let importsDirectory = getImportsDirectory("./imports/workspace/", env);
+    let importsDirectory = getEnvDirectory("./imports/workspace/", env);
 
     if (
       !values.app ||
