@@ -11,7 +11,7 @@ export interface CreateDockerCommandParameters {
   env: string;
   dry: boolean;
   force: boolean;
-  addToDotEnv: boolean;
+  adaptDotEnv: boolean;
 }
 
 export class CreateDockerCommand
@@ -78,14 +78,13 @@ export class CreateDockerCommand
     });
     if (data.dry) {
       logger.info(
-        `Dry Run: Would write to ${filePath} with content:`,
-        yamlContent
+        `Dry Run: Would write to ${filePath} with content:\n${yamlContent}`
       );
     } else {
       fs.writeFileSync(filePath, yamlContent);
     }
 
-    if (data.addToDotEnv) {
+    if (data.adaptDotEnv) {
       const envPath = `${envDirectory}/.env`;
       let envFile = fs.readFileSync(envPath, "utf8");
       let dashName = data.productName.replace(/_/g, "-");

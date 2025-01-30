@@ -12,6 +12,7 @@ import { RemoveSyncUICommand } from "./commands/sync/ui/remove-sync-ui";
 import { SyncUICommand } from "./commands/sync/ui/sync-ui";
 import { logger } from "./util/utils";
 import { CreateDockerCommand } from "./commands/docker/create-entry";
+import { RemoveDockerCommand } from "./commands/docker/remove-entry";
 
 //add the following line
 export class OneCXLocalEnvCLI {
@@ -161,7 +162,7 @@ export class OneCXLocalEnvCLI {
       .option("-f, --force", "Force (re)creation", false)
       .option("-d, --dry", "If should do a dry run", false)
       .option("-v, --verbose", "Print verbose information", false)
-      .option("--add-to-dot-env", "Add image section to .env file", false)
+      .option("--adapt-dot-env", "Adapt image definition in .env file", false)
       .action((name, operation, productName, uiPath, options) => {
         if (options.verbose) {
           process.env.VERBOSE = "true";
@@ -179,6 +180,13 @@ export class OneCXLocalEnvCLI {
             operation,
             name,
             uiPath,
+            productName,
+            ...options,
+          });
+        } else {
+          new RemoveDockerCommand().run({
+            operation,
+            name,
             productName,
             ...options,
           });
