@@ -5,10 +5,13 @@ import yaml from "js-yaml";
 
 export interface CreateDockerCommandParameters {
   name: string;
-  appName: string;
+  productName: string;
+  uiPath: string;
   sections: string[];
   env: string;
   dry: boolean;
+  force: boolean;
+  addToDotEnv: boolean;
 }
 
 export class CreateDockerCommand
@@ -16,6 +19,12 @@ export class CreateDockerCommand
 {
   run(data: CreateDockerCommandParameters): void {
     logger.info("Create docker...");
+
+    if (!data.sections.includes("'ui") && !data.uiPath) {
+      throw new Error(
+        "Argument 'uiPath' is required for section: ui, aborting."
+      );
+    }
     this.createAdaptedDockerCompose(data);
     logger.info(
       `Created custom docker-compose file at ${data.name}.docker-compose.yml`
@@ -44,17 +53,29 @@ export class CreateDockerCommand
     }
 
     for (let section of data.sections) {
-      if (fileContent.services[`${data.appName}-${section}`]) {
+      if (
+        fileContent.services[`${data.productName}-${section}`] &&
+        !data.force
+      ) {
         logger.warning(
-          `Service ${data.appName}-${section} already exists, skipping...`
+          `Service ${data.productName}-${section} already exists (use -f to force), skipping...`
         );
       } else {
-        fileContent.services[`${data.appName}-${section}`] =
+        if (fileContent.services[`${data.productName}-${section}`]) {
+          logger.warning(
+            `Forced replacement for service: ${data.productName}-${section}`
+          );
+        } else {
+          logger.info(`Added new section: ${data.productName}-${section}`);
+        }
+        fileContent.services[`${data.productName}-${section}`] =
           dockerData[section];
       }
     }
 
-    let yamlContent = yaml.dump(fileContent);
+    let yamlContent = yaml.dump(fileContent, {
+      lineWidth: -1,
+    });
     if (data.dry) {
       logger.info(
         `Dry Run: Would write to ${filePath} with content:`,
@@ -63,23 +84,52 @@ export class CreateDockerCommand
     } else {
       fs.writeFileSync(filePath, yamlContent);
     }
+
+    if (data.addToDotEnv) {
+      const envPath = `${envDirectory}/.env`;
+      let envFile = fs.readFileSync(envPath, "utf8");
+      let dashName = data.productName.replace(/_/g, "-");
+      let underscoreName = data.productName.replace(/-/g, "_").toUpperCase();
+      let content = [];
+
+      for (let section of data.sections) {
+        let key = `${underscoreName}_${section.toUpperCase()}`;
+        if (envFile.includes(key)) {
+          logger.warning(`[.env] Entry for ${key} already exists, skipping...`);
+        } else {
+          content.push(`${key}=${dashName}-${section}:main`);
+          logger.info(`[.env] Added new entry for ${key}`);
+        }
+      }
+      if (content.length > 0) {
+        envFile += "\n";
+        content.forEach((l) => (envFile += `${l}\n`));
+      }
+      if (data.dry) {
+        logger.info(
+          `Dry Run: Would write to ${envPath} with content:`,
+          envFile
+        );
+      } else {
+        logger.info("[.env] Updated .env");
+        fs.writeFileSync(envPath, envFile);
+      }
+    }
   }
 
-  // Replace - with _
-  replaceDashWithUnderscore(name: string): string {
-    return name.replace(/-/g, "_");
-  }
-
-  generateDocker(data: CreateDockerCommandParameters): { [key: string]: any } {
-    let underScoreName = this.replaceDashWithUnderscore(data.appName);
-    const sectionTitle = ` ########## ${data.appName.toUpperCase()}`;
+  generateDocker({ productName, uiPath }: CreateDockerCommandParameters): {
+    [key: string]: any;
+  } {
+    let underscoreName = productName.replace(/-/g, "_");
+    let dashName = productName.replace(/_/g, "-");
+    const sectionTitle = ` ########## ${dashName}`;
 
     const svc = {
-      image: `\${${underScoreName.toUpperCase()}_SVC}`,
+      image: `\${${underscoreName.toUpperCase()}_SVC}`,
       environment: {
-        QUARKUS_DATASOURCE_USERNAME: data.appName,
-        QUARKUS_DATASOURCE_PASSWORD: data.appName,
-        QUARKUS_DATASOURCE_JDBC_URL: `jdbc:postgresql://postgresdb:5432/${data.appName}?sslmode=disable`,
+        QUARKUS_DATASOURCE_USERNAME: underscoreName,
+        QUARKUS_DATASOURCE_PASSWORD: underscoreName,
+        QUARKUS_DATASOURCE_JDBC_URL: `jdbc:postgresql://postgresdb:5432/${underscoreName}?sslmode=disable`,
       },
       healthcheck: {
         test: "curl --head -fsS http://localhost:8080/q/health",
@@ -93,17 +143,17 @@ export class CreateDockerCommand
         },
       },
       labels: [
-        `traefik.http.services.${data.appName}-svc.loadbalancer.server.port=8080`,
-        `traefik.http.routers.${data.appName}-svc.rule=Host(\`${data.appName}-svc\`)`,
+        `traefik.http.services.${dashName}-svc.loadbalancer.server.port=8080`,
+        `traefik.http.routers.${dashName}-svc.rule=Host(\`${dashName}-svc\`)`,
       ],
       env_file: ["common.env", "svc.env"],
       networks: ["example"],
     };
 
     const bff = {
-      image: `\${${underScoreName.toUpperCase()}_BFF}`,
+      image: `\${${underscoreName.toUpperCase()}_BFF}`,
       environment: {
-        ONECX_PERMISSIONS_PRODUCT_NAME: data.appName,
+        ONECX_PERMISSIONS_PRODUCT_NAME: dashName,
       },
       healthcheck: {
         test: "curl --head -fsS http://localhost:8080/q/health",
@@ -112,13 +162,13 @@ export class CreateDockerCommand
         retries: 3,
       },
       depends_on: {
-        [`${underScoreName}-svc`]: {
+        [`${dashName}-svc`]: {
           condition: "service_healthy",
         },
       },
       labels: [
-        `traefik.http.services.${underScoreName}-bff.loadbalancer.server.port=8080`,
-        `traefik.http.routers.${underScoreName}-bff.rule=Host(\`${underScoreName}-bff\`)`,
+        `traefik.http.services.${dashName}-bff.loadbalancer.server.port=8080`,
+        `traefik.http.routers.${dashName}-bff.rule=Host(\`${dashName}-bff\`)`,
       ],
       env_file: ["common.env", "bff.env"],
       networks: ["example"],
@@ -126,20 +176,20 @@ export class CreateDockerCommand
     };
 
     const ui = {
-      image: `\${${underScoreName.toUpperCase()}_UI}`,
+      image: `\${${underscoreName.toUpperCase()}_UI}`,
       environment: {
-        APP_BASE_HREF: `/mfe/${data.appName}/`,
-        APP_ID: `${data.appName}-ui`,
-        PRODUCT_NAME: `${data.appName}`,
+        APP_BASE_HREF: `/mfe/${uiPath}/`, // NEEDS CUSTOM NAME
+        APP_ID: `${dashName}-ui`,
+        PRODUCT_NAME: `${dashName}`,
       },
       depends_on: {
-        [`${underScoreName}-bff`]: {
+        [`${underscoreName}-bff`]: {
           condition: "service_healthy",
         },
       },
       labels: [
-        `traefik.http.services.${underScoreName}-ui.loadbalancer.server.port=8080`,
-        `traefik.http.routers.${underScoreName}-ui.rule=Host(\`local-proxy\`)&&PathPrefix(\`/mfe/${data.appName}/\`)`,
+        `traefik.http.services.${dashName}-ui.loadbalancer.server.port=8080`,
+        `traefik.http.routers.${dashName}-ui.rule=Host(\`local-proxy\`)&&PathPrefix(\`/mfe/${uiPath}/\`)`,
       ],
       networks: ["example"],
       profiles: ["all"],

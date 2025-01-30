@@ -147,16 +147,22 @@ export class OneCXLocalEnvCLI {
           "remove",
         ])
       )
-      .argument("<appName>", "The name of the app")
+      .argument("<productName>", "The name of the product")
+      .argument(
+        "[uiPath]",
+        "Path the UI should be accessibled at (mfe/<uiPath>/)"
+      )
       .option("-s, --sections <sections...>", "The sections to generate", [
-        "ui",
-        "bff",
         "svc",
+        "bff",
+        "ui",
       ])
       .option("-e, --env <path>", "Path to the local environment", "./")
+      .option("-f, --force", "Force (re)creation", false)
       .option("-d, --dry", "If should do a dry run", false)
       .option("-v, --verbose", "Print verbose information", false)
-      .action((name, operation, appName, options) => {
+      .option("--add-to-dot-env", "Add image section to .env file", false)
+      .action((name, operation, productName, uiPath, options) => {
         if (options.verbose) {
           process.env.VERBOSE = "true";
         }
@@ -165,13 +171,15 @@ export class OneCXLocalEnvCLI {
         );
         logger.verbose(`Operation: ${operation}`);
         logger.verbose(`Name: ${name}`);
-        logger.verbose(`App Name: ${appName}`);
+        logger.verbose(`Product Name: ${productName}`);
+        logger.verbose(`UI Path: ${uiPath}`);
 
         if (operation === "create") {
           new CreateDockerCommand().run({
             operation,
             name,
-            appName,
+            uiPath,
+            productName,
             ...options,
           });
         }
