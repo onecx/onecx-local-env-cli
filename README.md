@@ -98,3 +98,52 @@ or for ZSH
 ```shell
 echo 'alias onecli=onecx-local-env-cli' >> .zshrc
 ```
+
+# Examples
+
+## Simple Scenario
+The example scenario covers one product consisting of svc, bff and ui and is called `onecx-ocean`.
+Current directory contains the three folders for `ocean-svc`, `ocean-bff` and `ocean-ui` as well as our `onecx-local-env` folder.
+
+### Add to local env
+To begin with, we want to synchronize our microservices into the local-env:
+```shell
+onecli sync svc onecx-ocean /ocean ./onecx-ocean-svc/helm/values.yml --env ./onecx-local-env 
+onecli sync bff onecx-ocean /ocean ./onecx-ocean-bff/helm/values.yml --env ./onecx-local-env 
+onecli sync ui onecx-ocean /ocean ./onecx-ocean-ui/helm/values.yml --env ./onecx-local-env 
+```
+
+These three commands will synchronize the responding microservices for a product with the name `onecx-ocean` and base-path `/ocean`.
+
+### Add to docker compose
+Next, we want our apps to be run via docker container and therefore create a custom docker compose:
+
+```shell
+onecli docker custom create onecx-ocean ocean --env ./onecx-local-env --adapt-dot-env
+```
+
+This will create a new `custom.docker-compose.yaml` file including our ocean microservices.
+Now we need to assure, that all microservices have built docker images locally and assert that the name and version match the values in `./onecx-local-env/.env`:
+```properties
+ONECX_OCEAN_UI=onecx-ocean-ui:999-SNAPSHOT
+ONECX_OCEAN_BFF=onecx-ocean-bff:999-SNAPSHOT
+ONECX_OCEAN_SVC=onecx-ocean-svc:999-SNAPSHOT
+```
+
+### Create menu entry
+To access our UI, we want to create a menu entry:
+
+```shell
+onecli menu create onecx-ocean-ui /ocean "Ocean UI" --env ../onecx-local-env 
+```
+The URL matches our previously configured product basePath to access it.
+
+### Import to database
+Lastly and most importantly we need to import all create files into the database.
+Therefore we execute the import script:
+```shell
+bash ./onecx-local-env/import-onecx.sh
+```
+
+### Summary
+We synchronized our microservices into the local env, created services in our custom docker compose and a menu entry for our UI. Now it should be accessible via menu (Custom Apps => Ocean UI).
