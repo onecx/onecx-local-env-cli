@@ -89,14 +89,14 @@ Options:
 To perform local testing you can install the CLI globally on your machine:
 Perform `npm run build && npm i -g .` inside the cli repository to build and install.
 Then the CLI is available via `onecx-local-env-cli` directly in your terminal.
-
+~
 *HINT*: You can use an alias `onecli` for convenience: 
 ```shell
-echo 'alias onecli=onecx-local-env-cli' >> .bashrc
+echo 'alias onecli=onecx-local-env-cli' >> ~/.bashrc
 ```
 or for ZSH
 ```shell
-echo 'alias onecli=onecx-local-env-cli' >> .zshrc
+echo 'alias onecli=onecx-local-env-cli' >> ~/.zshrc
 ```
 
 # Examples
