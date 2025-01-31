@@ -6,7 +6,7 @@ This CLI helps you with setting up microservices in the  [onecx-local-env](http:
 ## Synchronization
 To use an UI in the onecx-local-env, you have to first perform the synchronization using the sync command.
 After it was synchronized, you need to either add the UI to the docker compose as an image, or run it locally as described in the onecx-local-env repository.
-
+You can also use a remote `values.yml` by using the URL to it's raw content (e.g., on GitHub).
 
 ## Menu entries
 You can create menu entries, that will appear under a new "Custom Applications" top menu in the sidebar.
@@ -33,7 +33,7 @@ Arguments:
 -  `type`                   The type of microservice (choices: "ui", "bff", "svc")
 -  `productName`            The name of the product
 -  `basePath`               The base path of the product
--  `pathToValues`           The path to the values.yaml file of the microservice
+-  `pathToValues`           The path or URL to the values.yaml file of the microservice
 
 Options:
 -  `-e, --env <path>`       Path to the local environment (default: "./")

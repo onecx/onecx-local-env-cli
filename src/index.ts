@@ -37,7 +37,7 @@ export class OneCXLocalEnvCLI {
       .argument("<basePath>", "The base path of the product")
       .argument(
         "<pathToValues>",
-        "The path to the values.yaml file of the microservice"
+        "The path or URL to the values.yaml file of the microservice"
       )
       .option("-e, --env <path>", "Path to the local environment", "./")
       .option(
