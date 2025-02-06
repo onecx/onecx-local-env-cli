@@ -56,7 +56,7 @@ export class SyncWorkspace
       any
     ][]) {
       const microfrontend = {
-        appId: spec.remoteName,
+        appId: values.uiName,
         basePath: "/",
       };
 
