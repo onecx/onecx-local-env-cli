@@ -108,8 +108,8 @@ Current directory contains the three folders for `ocean-svc`, `ocean-bff` and `o
 ### Add to local env
 To begin with, we want to synchronize our microservices into the local-env:
 ```shell
-onecli sync svc onecx-ocean /ocean ./onecx-ocean-svc/helm/values.yml --env ./onecx-local-env 
-onecli sync bff onecx-ocean /ocean ./onecx-ocean-bff/helm/values.yml --env ./onecx-local-env 
+onecli sync svc onecx-ocean /ocean ./onecx-ocean-svc/src/main/helm/values.yml --env ./onecx-local-env 
+onecli sync bff onecx-ocean /ocean ./onecx-ocean-bff/src/main/helm/values.yml --env ./onecx-local-env 
 onecli sync ui onecx-ocean /ocean ./onecx-ocean-ui/helm/values.yml --env ./onecx-local-env 
 ```
 
