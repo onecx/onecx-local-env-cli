@@ -45,7 +45,7 @@ export class CreateDockerCommand
     let dockerData = this.generateDocker(data);
 
     if (!fileContent.include) {
-      fileContent.include = ["docker-compose.yml"];
+      fileContent.include = ["docker-compose.yaml"];
     }
 
     if (!fileContent.services) {
