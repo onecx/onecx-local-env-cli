@@ -20,6 +20,9 @@ export class CreateMenuEntryCommand
   run(data: CreateMenuEntryData): void {
     logger.info("Creating menu entry...");
 
+    // Assure roles is an array
+    data.roles = Array.isArray(data.roles) ? data.roles : [data.roles];
+
     // Validate imports directory exists
     let importsDirectory = getEnvDirectory("./imports/workspace", data.env);
     if (!fs.existsSync(importsDirectory)) {
