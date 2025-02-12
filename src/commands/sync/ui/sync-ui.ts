@@ -46,6 +46,7 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
     if (values.app.image.repository) {
       uiName = values.app.image.repository.split("/").pop();
     }
+    logger.verbose(`UI name: ${uiName}`);
 
     // Validate imports directory exists
     let importsDirectory = getEnvDirectory("./imports", data.env);
