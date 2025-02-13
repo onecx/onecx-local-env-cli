@@ -57,26 +57,22 @@ export class OneCXLocalEnvCLI {
       .option("-d, --dry", "If should do a dry run", false)
       .option("-R, --remove", "If synchronization should be removed", false)
       .option("-v, --verbose", "Print verbose information", false)
-      .action((type, productName, basePath, pathToValues, options) => {
+      .action(async (type, productName, basePath, pathToValues, options) => {
         if (options.verbose) {
           process.env.VERBOSE = "true";
-        }
-        try {
           logger.verbose(
             `Running sync command with options: ${JSON.stringify(options)}`
           );
           logger.verbose(`Product name: ${productName}`);
           logger.verbose(`Base path: ${basePath}`);
           logger.verbose(`Path to values: ${pathToValues}`);
-          this.getSyncCommandForType(type, options.remove).run({
-            pathToValues,
-            productName,
-            basePath,
-            ...options,
-          });
-        } catch (error: any) {
-          logger.error(error.message);
         }
+        await this.getSyncCommandForType(type, options.remove).run({
+          pathToValues,
+          productName,
+          basePath,
+          ...options,
+        });
       });
 
     cli

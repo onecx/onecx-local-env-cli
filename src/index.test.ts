@@ -23,7 +23,7 @@ describe("Command Parsing", () => {
   it("should run the correct command for sync ui", () => {
     const mockRun = jest
       .spyOn(SyncUICommand.prototype, "run")
-      .mockImplementation(() => {});
+      .mockImplementation(async () => {});
 
     const args = ["sync", "ui", "productName", "basePath", "pathToValues"];
     cmd.parse(args, {

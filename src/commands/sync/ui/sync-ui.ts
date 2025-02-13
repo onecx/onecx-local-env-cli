@@ -16,14 +16,9 @@ export interface SyncUIData extends SharedSyncData {
 }
 
 export class SyncUICommand implements SyncCommand<SyncUIData> {
-  run(data: SyncUIData): void {
-    retrieveValuesYAML(data.pathToValues)
-      .then((values) => {
-        this.performSync(data, values);
-      })
-      .catch((r) => {
-        logger.error(r.message);
-      });
+  async run(data: SyncUIData) {
+    const values = await retrieveValuesYAML(data.pathToValues);
+    this.performSync(data, values);
   }
 
   performSync(data: SyncUIData, values: any) {
