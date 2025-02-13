@@ -33,17 +33,21 @@ export class SyncWorkspace
     const workspace = JSON.parse(workspaceFile);
 
     let existingProducts = workspace.workspaces.admin.products;
-    // Remove existing product if it exists
-    existingProducts = existingProducts.filter(
-      (product: any) => product.productName !== params.productName
+    // Check if product exists
+    let existingProduct = existingProducts.find(
+      (product: any) => product.productName == params.productName
     );
 
+    if (existingProduct) {
+      logger.verbose("Found existing product: ", existingProduct);
+    }
+
     // Create new product
-    const newProduct: {
+    const product: {
       productName: string;
       baseUrl: string;
       microfrontends: { appId: any; basePath: string }[];
-    } = {
+    } = existingProduct ?? {
       productName: params.productName,
       baseUrl: params.basePath,
       microfrontends: [],
@@ -51,27 +55,44 @@ export class SyncWorkspace
 
     const microfrontends = values.app.operator.microfrontend.specs;
 
+    if (product.microfrontends.length > 0) {
+      logger.verbose(
+        "Found existing microfrontends in product: ",
+        product.microfrontends
+      );
+    }
+
     for (const [key, spec] of Object.entries(microfrontends) as [
       string,
       any
     ][]) {
       const microfrontend = {
-        appId: spec.remoteName,
+        appId: params.uiName,
         basePath: "/",
       };
 
-      newProduct.microfrontends.push(microfrontend);
+      const existingMicrofrontend = product.microfrontends.find(
+        (mf: any) =>
+          mf.appId == microfrontend.appId &&
+          mf.basePath == microfrontend.basePath
+      );
 
-      for (let requiredField of ["remoteName"]) {
-        if (!spec[requiredField]) {
-          logger.warning(
-            `Missing field ${requiredField} in microfrontend spec ${key}, this can cause issues.`
-          );
-        }
+      if (existingMicrofrontend === undefined) {
+        product.microfrontends.push(microfrontend);
+      } else {
+        logger.info(
+          `Microfrontend ${microfrontend.appId} with base path ${microfrontend.basePath} already exists. Skipping...`
+        );
       }
     }
 
-    existingProducts.push(newProduct);
+    if (existingProduct) {
+      existingProducts = existingProducts.map((_product: any) =>
+        _product.productName === product.productName ? product : _product
+      );
+    } else {
+      existingProducts.push(product);
+    }
     workspace.workspaces.admin.products = existingProducts;
 
     if (dry) {

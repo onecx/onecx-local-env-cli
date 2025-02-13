@@ -1,9 +1,9 @@
 import fs from "fs";
-import yaml from "js-yaml";
 import { getEnvDirectory, logger } from "../../../util/utils";
 import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncPermissions } from "../shared/sync-permissions";
 import { SyncProducts } from "../shared/sync-products";
+import { retrieveValuesYAML } from "../shared/values.utils";
 import { SharedSyncData, SyncCommand } from "../sync-command";
 import { SyncMicrofrontends } from "./sync-microfrontends";
 import { SyncSlots } from "./sync-slots";
@@ -16,17 +16,13 @@ export interface SyncUIData extends SharedSyncData {
 }
 
 export class SyncUICommand implements SyncCommand<SyncUIData> {
-  run(data: SyncUIData): void {
+  async run(data: SyncUIData) {
+    const values = await retrieveValuesYAML(data.pathToValues);
+    this.performSync(data, values);
+  }
+
+  performSync(data: SyncUIData, values: any) {
     logger.info("Syncing UI...");
-
-    // Validate if the values file exists
-    if (!fs.existsSync(data.pathToValues)) {
-      throw new Error(`Values file not found at path: ${data.pathToValues}`);
-    }
-
-    const valuesFile = fs.readFileSync(data.pathToValues, "utf8");
-    const values = yaml.load(valuesFile) as any;
-
     // Check if repository is provided or custom name is provided
     if (
       !(
@@ -45,6 +41,7 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
     if (values.app.image.repository) {
       uiName = values.app.image.repository.split("/").pop();
     }
+    logger.verbose(`UI name: ${uiName}`);
 
     // Validate imports directory exists
     let importsDirectory = getEnvDirectory("./imports", data.env);

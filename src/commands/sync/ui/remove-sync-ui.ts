@@ -1,9 +1,8 @@
-import fs from "fs";
-import yaml from "js-yaml";
 import { logger } from "../../../util/utils";
 import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncPermissions } from "../shared/sync-permissions";
 import { SyncProducts } from "../shared/sync-products";
+import { retrieveValuesYAML } from "../shared/values.utils";
 import { SharedSyncData, SyncCommand } from "../sync-command";
 import { SyncMicrofrontends } from "./sync-microfrontends";
 import { SyncSlots } from "./sync-slots";
@@ -15,15 +14,17 @@ export interface SyncUIData extends SharedSyncData {
 
 export class RemoveSyncUICommand implements SyncCommand<SyncUIData> {
   run(data: SyncUIData): void {
+    retrieveValuesYAML(data.pathToValues)
+      .then((values) => {
+        this.performSync(data, values);
+      })
+      .catch((r) => {
+        logger.error(r.message);
+      });
+  }
+
+  performSync(data: SyncUIData, values: any) {
     logger.info("Remove synchronized UI...");
-
-    // Validate if the values file exists
-    if (!fs.existsSync(data.pathToValues)) {
-      throw new Error(`Values file not found at path: ${data.pathToValues}`);
-    }
-
-    const valuesFile = fs.readFileSync(data.pathToValues, "utf8");
-    const values = yaml.load(valuesFile) as any;
 
     // Check if repository is provided or custom name is provided
     if (!values.app.image.repository && !data.name) {

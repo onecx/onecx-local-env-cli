@@ -1,9 +1,8 @@
-import fs from "fs";
-import yaml from "js-yaml";
 import { logger } from "../../../util/utils";
 import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncProducts } from "../shared/sync-products";
 import { SharedSyncData, SyncCommand } from "../sync-command";
+import { retrieveValuesYAML } from "../shared/values.utils";
 
 export interface SyncSVCData extends SharedSyncData {
   productName: string;
@@ -13,15 +12,17 @@ export interface SyncSVCData extends SharedSyncData {
 
 export class SyncSVCCommand implements SyncCommand<SyncSVCData> {
   run(data: SyncSVCData): void {
+    retrieveValuesYAML(data.pathToValues)
+      .then((values) => {
+        this.performSync(data, values);
+      })
+      .catch((r) => {
+        logger.error(r.message);
+      });
+  }
+
+  performSync(data: SyncSVCData, values: any) {
     logger.info("Syncing SVC...");
-
-    // Validate if the values file exists
-    if (!fs.existsSync(data.pathToValues)) {
-      throw new Error(`Values file not found at path: ${data.pathToValues}`);
-    }
-
-    const valuesFile = fs.readFileSync(data.pathToValues, "utf8");
-    const values = yaml.load(valuesFile) as any;
 
     // Check if repository is provided or custom name is provided
     if (!values.app.image.repository && !data.name) {

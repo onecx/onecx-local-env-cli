@@ -6,7 +6,7 @@ This CLI helps you with setting up microservices in the  [onecx-local-env](http:
 ## Synchronization
 To use an UI in the onecx-local-env, you have to first perform the synchronization using the sync command.
 After it was synchronized, you need to either add the UI to the docker compose as an image, or run it locally as described in the onecx-local-env repository.
-
+You can also use a remote `values.yml` by using the URL to it's raw content (e.g., on GitHub).
 
 ## Menu entries
 You can create menu entries, that will appear under a new "Custom Applications" top menu in the sidebar.
@@ -33,7 +33,7 @@ Arguments:
 -  `type`                   The type of microservice (choices: "ui", "bff", "svc")
 -  `productName`            The name of the product
 -  `basePath`               The base path of the product
--  `pathToValues`           The path to the values.yaml file of the microservice
+-  `pathToValues`           The path or URL to the values.yaml file of the microservice
 
 Options:
 -  `-e, --env <path>`       Path to the local environment (default: "./")
@@ -89,14 +89,14 @@ Options:
 To perform local testing you can install the CLI globally on your machine:
 Perform `npm run build && npm i -g .` inside the cli repository to build and install.
 Then the CLI is available via `onecx-local-env-cli` directly in your terminal.
-
+~
 *HINT*: You can use an alias `onecli` for convenience: 
 ```shell
-echo 'alias onecli=onecx-local-env-cli' >> .bashrc
+echo 'alias onecli=onecx-local-env-cli' >> ~/.bashrc
 ```
 or for ZSH
 ```shell
-echo 'alias onecli=onecx-local-env-cli' >> .zshrc
+echo 'alias onecli=onecx-local-env-cli' >> ~/.zshrc
 ```
 
 # Examples
@@ -108,8 +108,8 @@ Current directory contains the three folders for `ocean-svc`, `ocean-bff` and `o
 ### Add to local env
 To begin with, we want to synchronize our microservices into the local-env:
 ```shell
-onecli sync svc onecx-ocean /ocean ./onecx-ocean-svc/helm/values.yml --env ./onecx-local-env 
-onecli sync bff onecx-ocean /ocean ./onecx-ocean-bff/helm/values.yml --env ./onecx-local-env 
+onecli sync svc onecx-ocean /ocean ./onecx-ocean-svc/src/main/helm/values.yml --env ./onecx-local-env 
+onecli sync bff onecx-ocean /ocean ./onecx-ocean-bff/src/main/helm/values.yml --env ./onecx-local-env 
 onecli sync ui onecx-ocean /ocean ./onecx-ocean-ui/helm/values.yml --env ./onecx-local-env 
 ```
 
