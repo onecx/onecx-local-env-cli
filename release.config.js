@@ -33,7 +33,7 @@ module.exports = {
     [
       '@semantic-release/exec',
       {
-        prepareCmd: `./release-script.sh \${nextRelease.version} \${nextRelease.channel}`,
+        prepareCmd: `VERSION=\${nextRelease.version} npx nx run-many -t release && VERSION=\${nextRelease.version} npx -p replace-json-property rjp ./package.json version \${nextRelease.version}`,
       },
     ],
     [
