@@ -2,6 +2,7 @@ import { getEnvDirectory, logger } from "../../util/utils";
 import { OnecxCommand } from "../onecx-command";
 import fs from "fs";
 import yaml from "js-yaml";
+import { DockerFileContent } from "../sync/types";
 
 export interface RemoveDockerCommandParameters {
   name: string;
@@ -19,20 +20,18 @@ export class RemoveDockerCommand
     logger.info("Removing services...");
 
     this.removeFromDockerCompose(data);
-    logger.info(
-      `Removed services from ${data.name}.docker-compose.yml`
-    );
+    logger.info(`Removed services from ${data.name}.docker-compose.yml`);
   }
 
   removeFromDockerCompose(data: RemoveDockerCommandParameters) {
-    let envDirectory = getEnvDirectory("", data.env);
+    const envDirectory = getEnvDirectory("", data.env);
     const fileName = `${data.name}.docker-compose.yml`;
     const filePath = `${envDirectory}/${fileName}`;
 
-    let fileContent: any = {};
+    let fileContent: DockerFileContent = {};
     if (fs.existsSync(filePath)) {
       const composeFile = fs.readFileSync(filePath, "utf8");
-      fileContent = yaml.load(composeFile);
+      fileContent = yaml.load(composeFile) as DockerFileContent;
     }
 
     if (!fileContent.services) {
@@ -41,7 +40,7 @@ export class RemoveDockerCommand
       );
     }
 
-    for (let section of data.sections) {
+    for (const section of data.sections) {
       if (fileContent.services[`${data.productName}-${section}`]) {
         delete fileContent.services[`${data.productName}-${section}`];
         logger.info(`Service ${data.productName}-${section} removed`);
@@ -52,7 +51,7 @@ export class RemoveDockerCommand
       }
     }
 
-    let yamlContent = yaml.dump(fileContent, {
+    const yamlContent = yaml.dump(fileContent, {
       lineWidth: -1,
     });
     if (data.dry) {
@@ -66,11 +65,10 @@ export class RemoveDockerCommand
     if (data.adaptDotEnv) {
       const envPath = `${envDirectory}/.env`;
       let envFile = fs.readFileSync(envPath, "utf8");
-      let dashName = data.productName.replace(/_/g, "-");
-      let underscoreName = data.productName.replace(/-/g, "_").toUpperCase();
+      const underscoreName = data.productName.replace(/-/g, "_").toUpperCase();
 
-      for (let section of data.sections) {
-        let key = `${underscoreName}_${section.toUpperCase()}`;
+      for (const section of data.sections) {
+        const key = `${underscoreName}_${section.toUpperCase()}`;
         if (envFile.includes(key)) {
           const regex = new RegExp(`^${key}=.*$`, "gm");
           envFile = envFile.replace(regex, "");

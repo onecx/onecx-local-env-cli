@@ -3,6 +3,7 @@ import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getEnvDirectory, logger } from "../../../util/utils";
 import { SyncUIData } from "./sync-ui";
+import { MicrofrontendSpecification, ValuesSpecification } from "../types";
 
 export interface SyncMicrofrontendsparams extends SyncUIData {
   uiName: string;
@@ -12,10 +13,10 @@ export class SyncMicrofrontends
   implements SynchronizationStep<SyncMicrofrontendsparams>
 {
   synchronize(
-    values: any,
+    values: ValuesSpecification,
     { env, dry, ...params }: SyncMicrofrontendsparams
   ): void {
-    let importsDirectory = getEnvDirectory(
+    const importsDirectory = getEnvDirectory(
       "./imports/product-store/microfrontends",
       env
     );
@@ -35,7 +36,7 @@ export class SyncMicrofrontends
 
     for (const [key, spec] of Object.entries(microfrontends) as [
       string,
-      any
+      MicrofrontendSpecification
     ][]) {
       const fileName = `${params.productName}_${params.uiName}_${key}.json`;
       const filePath = path.join(importsDirectory, fileName);
@@ -56,14 +57,18 @@ export class SyncMicrofrontends
         undeployed: false,
       };
 
-      for (let requiredField of [
+      for (const requiredField of [
         "remoteName",
         "remoteEntry",
         "exposedModule",
         "tagName",
         "type",
       ]) {
-        if (!spec[requiredField]) {
+        if (
+          !Object.entries(spec).some(
+            ([e, v]) => e === requiredField && v != null
+          )
+        ) {
           logger.warning(
             `Missing field ${requiredField} in microfrontend spec ${key}, this can cause issues.`
           );
@@ -84,10 +89,10 @@ export class SyncMicrofrontends
   }
 
   removeSynchronization(
-    values: any,
+    values: ValuesSpecification,
     { env, dry, ...params }: SyncMicrofrontendsparams
   ): void {
-    let importsDirectory = getEnvDirectory(
+    const importsDirectory = getEnvDirectory(
       "./imports/product-store/microfrontends",
       env
     );

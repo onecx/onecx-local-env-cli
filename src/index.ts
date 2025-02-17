@@ -213,7 +213,7 @@ if (require.main === module) {
     cli.parse(process.argv, {
       from: "node",
     });
-  } catch (error: any) {
-    logger.error(error.message);
+  } catch (error: unknown) {
+    logger.error((error as { message: string }).message);
   }
 }

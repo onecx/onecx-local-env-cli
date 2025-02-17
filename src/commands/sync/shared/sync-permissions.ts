@@ -4,6 +4,7 @@ import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getEnvDirectory, logger } from "../../../util/utils";
 import { SharedSyncData } from "../sync-command";
+import { ValuesSpecification } from "../types";
 
 export interface SyncPermissionsParams extends SharedSyncData {
   appName: string;
@@ -14,10 +15,10 @@ export class SyncPermissions
   implements SynchronizationStep<SyncPermissionsParams>
 {
   synchronize(
-    values: any,
+    values: ValuesSpecification,
     { env, dry, ...params }: SyncPermissionsParams
   ): void {
-    let importsDir = getEnvDirectory("./imports/permissions", env);
+    const importsDir = getEnvDirectory("./imports/permissions", env);
 
     if (
       !values.app ||
@@ -43,7 +44,7 @@ export class SyncPermissions
     // Build permissions array
     for (const [resource, uiPermissions] of Object.entries(
       values.app.operator.permission.spec.permissions
-    ) as [string, any][]) {
+    ) as [string, { [key: string]: string }][]) {
       permissionFile.permissions.push(
         ...Object.keys(uiPermissions).map((action: string) => ({
           resource,
@@ -62,7 +63,7 @@ export class SyncPermissions
     }
 
     // Sync assignments
-    let assignmentsDir = getEnvDirectory("./imports/assignments", env);
+    const assignmentsDir = getEnvDirectory("./imports/assignments", env);
     const assignmentsFilePath = path.join(assignmentsDir, "onecx.json");
 
     if (!fs.existsSync(assignmentsFilePath)) {
@@ -90,7 +91,7 @@ export class SyncPermissions
     uiSection[targetRole] = {};
     for (const [resource, uiPermissions] of Object.entries(
       values.app.operator.permission.spec.permissions
-    ) as [string, any][]) {
+    ) as [string, { [key: string]: string }][]) {
       uiSection[targetRole][resource] = Object.keys(uiPermissions);
     }
 
@@ -110,10 +111,10 @@ export class SyncPermissions
   }
 
   removeSynchronization(
-    _: any,
+    _: ValuesSpecification,
     { env, dry, ...params }: SyncPermissionsParams
   ): void {
-    let importsDir = getEnvDirectory("./imports/permissions", env);
+    const importsDir = getEnvDirectory("./imports/permissions", env);
     const fileName = `${params.productName}_${params.appName}.json`;
     const filePath = path.join(importsDir, fileName);
 
@@ -127,7 +128,7 @@ export class SyncPermissions
     }
 
     // Remove assignments
-    let assignmentsDir = getEnvDirectory("./imports/assignments", env);
+    const assignmentsDir = getEnvDirectory("./imports/assignments", env);
     const assignmentsFilePath = path.join(assignmentsDir, "onecx.json");
 
     if (!fs.existsSync(assignmentsFilePath)) {

@@ -11,10 +11,10 @@ export function getEnvDirectory(subpath: string, env?: string): string {
 }
 
 export const logger = {
-  info: (...msg: any[]) => console.log(colors.green("INFO:"), ...msg),
-  warning: (...msg: any[]) => console.warn(colors.yellow("WARNING:"), ...msg),
-  error: (...msg: any[]) => console.error(colors.red("ERROR:"), ...msg),
-  verbose: (...msg: any[]) => {
+  info: (...msg: unknown[]) => console.log(colors.green("INFO:"), ...msg),
+  warning: (...msg: unknown[]) => console.warn(colors.yellow("WARNING:"), ...msg),
+  error: (...msg: unknown[]) => console.error(colors.red("ERROR:"), ...msg),
+  verbose: (...msg: unknown[]) => {
     if (process.env.VERBOSE) {
       console.log(colors.blue("VERBOSE:"), ...msg);
     }

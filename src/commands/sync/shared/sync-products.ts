@@ -3,6 +3,7 @@ import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getEnvDirectory, logger } from "../../../util/utils";
 import { SharedSyncData } from "../sync-command";
+import { ValuesSpecification } from "../types";
 
 export interface SyncProductsParams extends SharedSyncData {
   icon: string;
@@ -10,8 +11,11 @@ export interface SyncProductsParams extends SharedSyncData {
 }
 
 export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
-  synchronize(_: any, { env, dry, ...params }: SyncProductsParams): void {
-    let importsDir = getEnvDirectory(
+  synchronize(
+    _: ValuesSpecification,
+    { env, dry, ...params }: SyncProductsParams
+  ): void {
+    const importsDir = getEnvDirectory(
       "./imports/product-store/products/",
       env
     );
@@ -41,7 +45,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
   }
 
   checkProductInUse(productName: string, env: string): boolean {
-    let importsDir = getEnvDirectory("./imports/", env);
+    const importsDir = getEnvDirectory("./imports/", env);
 
     /**
      * For microservices, permissions, microfrontends and slots we can check if a file exist
@@ -50,7 +54,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
      */
 
     const files = fs.readdirSync(importsDir);
-    let existingFile = files.find(
+    const existingFile = files.find(
       (file) => file.startsWith(productName) && file !== `${productName}.json`
     );
     if (existingFile) {
@@ -63,7 +67,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
     /**
      * For assignments
      */
-    let assignmentsDir = getEnvDirectory("./imports/assignments", env);
+    const assignmentsDir = getEnvDirectory("./imports/assignments", env);
     const assignmentsFilePath = path.join(assignmentsDir, "onecx.json");
 
     if (!fs.existsSync(assignmentsFilePath)) {
@@ -87,14 +91,14 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
   }
 
   removeSynchronization(
-    _: any,
+    _: ValuesSpecification,
     { env, dry, ...params }: SyncProductsParams
   ): void {
     const inUse = this.checkProductInUse(params.productName, env);
     if (inUse) {
       return;
     }
-    let importsDir = getEnvDirectory(
+    const importsDir = getEnvDirectory(
       "./imports/product-store/products/",
       env
     );

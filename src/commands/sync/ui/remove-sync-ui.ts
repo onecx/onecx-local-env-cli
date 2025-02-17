@@ -6,6 +6,7 @@ import { retrieveValuesYAML } from "../shared/values.utils";
 import { SharedSyncData, SyncCommand } from "../sync-command";
 import { SyncMicrofrontends } from "./sync-microfrontends";
 import { SyncSlots } from "./sync-slots";
+import { ValuesSpecification } from "../types";
 export interface SyncUIData extends SharedSyncData {
   productName: string;
   pathToValues: string;
@@ -16,14 +17,14 @@ export class RemoveSyncUICommand implements SyncCommand<SyncUIData> {
   run(data: SyncUIData): void {
     retrieveValuesYAML(data.pathToValues)
       .then((values) => {
-        this.performSync(data, values);
+        this.performSync(data, values as ValuesSpecification);
       })
       .catch((r) => {
         logger.error(r.message);
       });
   }
 
-  performSync(data: SyncUIData, values: any) {
+  performSync(data: SyncUIData, values: ValuesSpecification) {
     logger.info("Remove synchronized UI...");
 
     // Check if repository is provided or custom name is provided
@@ -34,7 +35,7 @@ export class RemoveSyncUICommand implements SyncCommand<SyncUIData> {
     }
     let uiName = data.name ?? "";
     if (values.app.image.repository) {
-      uiName = values.app.image.repository.split("/").pop();
+      uiName = values.app.image.repository.split("/").pop() ?? "";
     }
 
     // Microfrontends

@@ -8,6 +8,7 @@ import { SharedSyncData, SyncCommand } from "../sync-command";
 import { SyncMicrofrontends } from "./sync-microfrontends";
 import { SyncSlots } from "./sync-slots";
 import { SyncWorkspace } from "./sync-workspace";
+import { ValuesSpecification } from "../types";
 
 export interface SyncUIData extends SharedSyncData {
   productName: string;
@@ -18,10 +19,10 @@ export interface SyncUIData extends SharedSyncData {
 export class SyncUICommand implements SyncCommand<SyncUIData> {
   async run(data: SyncUIData) {
     const values = await retrieveValuesYAML(data.pathToValues);
-    this.performSync(data, values);
+    this.performSync(data, values as ValuesSpecification);
   }
 
-  performSync(data: SyncUIData, values: any) {
+  performSync(data: SyncUIData, values: ValuesSpecification) {
     logger.info("Syncing UI...");
     // Check if repository is provided or custom name is provided
     if (
@@ -39,12 +40,12 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
     }
     let uiName = data.name ?? "";
     if (values.app.image.repository) {
-      uiName = values.app.image.repository.split("/").pop();
+      uiName = values.app.image.repository.split("/").pop() ?? "";
     }
     logger.verbose(`UI name: ${uiName}`);
 
     // Validate imports directory exists
-    let importsDirectory = getEnvDirectory("./imports", data.env);
+    const importsDirectory = getEnvDirectory("./imports", data.env);
     if (!fs.existsSync(importsDirectory)) {
       throw new Error(
         `Imports directory not found at path: ${importsDirectory}`

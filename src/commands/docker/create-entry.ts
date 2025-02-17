@@ -2,6 +2,7 @@ import { getEnvDirectory, logger } from "../../util/utils";
 import { OnecxCommand } from "../onecx-command";
 import fs from "fs";
 import yaml from "js-yaml";
+import { DockerFileContent } from "../sync/types";
 
 export interface CreateDockerCommandParameters {
   name: string;
@@ -32,17 +33,17 @@ export class CreateDockerCommand
   }
 
   createAdaptedDockerCompose(data: CreateDockerCommandParameters) {
-    let envDirectory = getEnvDirectory("", data.env);
+    const envDirectory = getEnvDirectory("", data.env);
     const fileName = `${data.name}.docker-compose.yml`;
     const filePath = `${envDirectory}/${fileName}`;
 
-    let fileContent: any = {};
+    let fileContent: DockerFileContent = {};
     if (fs.existsSync(filePath)) {
       const composeFile = fs.readFileSync(filePath, "utf8");
-      fileContent = yaml.load(composeFile);
+      fileContent = yaml.load(composeFile) as DockerFileContent;
     }
 
-    let dockerData = this.generateDocker(data);
+    const dockerData = this.generateDocker(data);
 
     if (!fileContent.include) {
       fileContent.include = ["docker-compose.yaml"];
@@ -52,7 +53,7 @@ export class CreateDockerCommand
       fileContent.services = {};
     }
 
-    for (let section of data.sections) {
+    for (const section of data.sections) {
       if (
         fileContent.services[`${data.productName}-${section}`] &&
         !data.force
@@ -73,7 +74,7 @@ export class CreateDockerCommand
       }
     }
 
-    let yamlContent = yaml.dump(fileContent, {
+    const yamlContent = yaml.dump(fileContent, {
       lineWidth: -1,
     });
     if (data.dry) {
@@ -87,12 +88,12 @@ export class CreateDockerCommand
     if (data.adaptDotEnv) {
       const envPath = `${envDirectory}/.env`;
       let envFile = fs.readFileSync(envPath, "utf8");
-      let dashName = data.productName.replace(/_/g, "-");
-      let underscoreName = data.productName.replace(/-/g, "_").toUpperCase();
-      let content = [];
+      const dashName = data.productName.replace(/_/g, "-");
+      const underscoreName = data.productName.replace(/-/g, "_").toUpperCase();
+      const content = [];
 
-      for (let section of data.sections) {
-        let key = `${underscoreName}_${section.toUpperCase()}`;
+      for (const section of data.sections) {
+        const key = `${underscoreName}_${section.toUpperCase()}`;
         if (envFile.includes(key)) {
           logger.warning(`[.env] Entry for ${key} already exists, skipping...`);
         } else {
@@ -117,10 +118,10 @@ export class CreateDockerCommand
   }
 
   generateDocker({ productName, uiPath }: CreateDockerCommandParameters): {
-    [key: string]: any;
+    [key: string]: unknown;
   } {
-    let underscoreName = productName.replace(/-/g, "_");
-    let dashName = productName.replace(/_/g, "-");
+    const underscoreName = productName.replace(/-/g, "_");
+    const dashName = productName.replace(/_/g, "-");
     const sectionTitle = ` ########## ${dashName}`;
 
     const svc = {
