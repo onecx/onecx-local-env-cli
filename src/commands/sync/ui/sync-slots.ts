@@ -5,14 +5,18 @@ import { SynchronizationStep } from "../../../util/synchronization-step";
 import { red } from "colors/safe";
 import { getEnvDirectory, logger } from "../../../util/utils";
 import { SyncUIData } from "./sync-ui";
+import { ValuesSpecification } from "../types";
 
 export interface SyncSlotsparams extends SyncUIData {
   uiName: string;
 }
 
 export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
-  synchronize(values: any, { env, dry, ...params }: SyncSlotsparams): void {
-    let importsDirectory = getEnvDirectory(
+  synchronize(
+    values: ValuesSpecification,
+    { env, dry, ...params }: SyncSlotsparams
+  ): void {
+    const importsDirectory = getEnvDirectory(
       "./imports/product-store/slots",
       env
     );
@@ -24,7 +28,13 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
 
     const slots = values.app.operator.slot.specs;
 
-    for (const [key, spec] of Object.entries(slots) as [string, any][]) {
+    for (const [key, spec] of Object.entries(slots) as [
+      string,
+      {
+        name: string;
+        description: string;
+      }
+    ][]) {
       const fileName = `${params.productName}_${params.uiName}_${key}.json`;
       const filePath = path.join(importsDirectory, fileName);
 
@@ -49,10 +59,10 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
   }
 
   removeSynchronization(
-    values: any,
+    values: ValuesSpecification,
     { env, dry, ...params }: SyncSlotsparams
   ): void {
-    let importsDirectory = getEnvDirectory(
+    const importsDirectory = getEnvDirectory(
       "./imports/product-store/slots",
       env
     );

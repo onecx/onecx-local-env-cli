@@ -5,6 +5,7 @@ import { getEnvDirectory, logger } from "../../../util/utils";
 
 import { red } from "colors/safe";
 import { SharedSyncData } from "../sync-command";
+import { ValuesSpecification } from "../types";
 
 export interface SyncMicroservicesparams extends SharedSyncData {
   customName: string;
@@ -13,8 +14,11 @@ export interface SyncMicroservicesparams extends SharedSyncData {
 export class SyncMicroservices
   implements SynchronizationStep<SyncMicroservicesparams>
 {
-  synchronize(_: any, { env, dry, ...params }: SyncMicroservicesparams): void {
-    let importsDir = getEnvDirectory(
+  synchronize(
+    _: ValuesSpecification,
+    { env, dry, ...params }: SyncMicroservicesparams
+  ): void {
+    const importsDir = getEnvDirectory(
       "./imports/product-store/microservices/",
       env
     );
@@ -42,10 +46,10 @@ export class SyncMicroservices
   }
 
   removeSynchronization(
-    _: any,
+    _: ValuesSpecification,
     { env, dry, ...params }: SyncMicroservicesparams
   ): void {
-    let importsDir = getEnvDirectory(
+    const importsDir = getEnvDirectory(
       "./imports/product-store/microservices/",
       env
     );

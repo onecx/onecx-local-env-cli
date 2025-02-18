@@ -4,6 +4,7 @@ import { SyncPermissions } from "../shared/sync-permissions";
 import { SyncProducts } from "../shared/sync-products";
 import { retrieveValuesYAML } from "../shared/values.utils";
 import { SharedSyncData, SyncCommand } from "../sync-command";
+import { ValuesSpecification } from "../types";
 
 export interface SyncBFFData extends SharedSyncData {
   productName: string;
@@ -15,14 +16,14 @@ export class RemoveSyncBFFCommand implements SyncCommand<SyncBFFData> {
   run(data: SyncBFFData): void {
     retrieveValuesYAML(data.pathToValues)
       .then((values) => {
-        this.performSync(data, values);
+        this.performSync(data, values as ValuesSpecification);
       })
       .catch((r) => {
         logger.error(r.message);
       });
   }
 
-  performSync(data: SyncBFFData, values: any) {
+  performSync(data: SyncBFFData, values: ValuesSpecification) {
     logger.info("Remove synchronized BFF...");
 
     // Check if repository is provided or custom name is provided
@@ -33,7 +34,7 @@ export class RemoveSyncBFFCommand implements SyncCommand<SyncBFFData> {
     }
     let bffName = data.name ?? "";
     if (values.app.image.repository) {
-      bffName = values.app.image.repository.split("/").pop();
+      bffName = values.app.image.repository.split("/").pop() ?? "";
     }
 
     // Permissions

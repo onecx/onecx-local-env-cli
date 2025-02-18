@@ -3,6 +3,11 @@ import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getEnvDirectory, logger } from "../../../util/utils";
 import { SyncUIData } from "./sync-ui";
+import {
+  ProductMicrofrontendSpecification,
+  ProductSpecification,
+  ValuesSpecification,
+} from "../types";
 
 export interface SyncWorkspacesParameters extends SyncUIData {
   uiName: string;
@@ -12,10 +17,10 @@ export class SyncWorkspace
   implements SynchronizationStep<SyncWorkspacesParameters>
 {
   synchronize(
-    values: any,
+    values: ValuesSpecification,
     { env, dry, ...params }: SyncWorkspacesParameters
   ): void {
-    let importsDirectory = getEnvDirectory("./imports/workspace/", env);
+    const importsDirectory = getEnvDirectory("./imports/workspace/", env);
 
     if (
       !values.app ||
@@ -34,8 +39,9 @@ export class SyncWorkspace
 
     let existingProducts = workspace.workspaces.admin.products;
     // Check if product exists
-    let existingProduct = existingProducts.find(
-      (product: any) => product.productName == params.productName
+    const existingProduct = existingProducts.find(
+      (product: ProductSpecification) =>
+        product.productName == params.productName
     );
 
     if (existingProduct) {
@@ -46,7 +52,7 @@ export class SyncWorkspace
     const product: {
       productName: string;
       baseUrl: string;
-      microfrontends: { appId: any; basePath: string }[];
+      microfrontends: { appId: string; basePath: string }[];
     } = existingProduct ?? {
       productName: params.productName,
       baseUrl: params.basePath,
@@ -62,17 +68,20 @@ export class SyncWorkspace
       );
     }
 
-    for (const [key, spec] of Object.entries(microfrontends) as [
+    // TODO: key/spec not used at all => fix
+    for (const [_, spec] of Object.entries(microfrontends) as [
       string,
-      any
+      {
+        remoteName: string;
+      }
     ][]) {
       const microfrontend = {
-        appId: params.uiName,
+        appId: spec.remoteName,
         basePath: "/",
       };
 
       const existingMicrofrontend = product.microfrontends.find(
-        (mf: any) =>
+        (mf: ProductMicrofrontendSpecification) =>
           mf.appId == microfrontend.appId &&
           mf.basePath == microfrontend.basePath
       );
@@ -87,8 +96,9 @@ export class SyncWorkspace
     }
 
     if (existingProduct) {
-      existingProducts = existingProducts.map((_product: any) =>
-        _product.productName === product.productName ? product : _product
+      existingProducts = existingProducts.map(
+        (_product: { productName: string }) =>
+          _product.productName === product.productName ? product : _product
       );
     } else {
       existingProducts.push(product);
@@ -108,10 +118,10 @@ export class SyncWorkspace
   }
 
   removeSynchronization(
-    values: any,
+    values: ValuesSpecification,
     { env, dry, ...params }: SyncWorkspacesParameters
   ): void {
-    let importsDirectory = getEnvDirectory("./imports/workspace/", env);
+    const importsDirectory = getEnvDirectory("./imports/workspace/", env);
 
     if (
       !values.app ||
@@ -129,7 +139,8 @@ export class SyncWorkspace
     let existingProducts = workspace.workspaces.admin.products;
     // Remove product if it exists
     existingProducts = existingProducts.filter(
-      (product: any) => product.productName !== params.productName
+      (product: ProductSpecification) =>
+        product.productName !== params.productName
     );
 
     workspace.workspaces.admin.products = existingProducts;

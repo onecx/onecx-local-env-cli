@@ -24,7 +24,7 @@ export class CreateMenuEntryCommand
     data.roles = Array.isArray(data.roles) ? data.roles : [data.roles];
 
     // Validate imports directory exists
-    let importsDirectory = getEnvDirectory("./imports/workspace", data.env);
+    const importsDirectory = getEnvDirectory("./imports/workspace", data.env);
     if (!fs.existsSync(importsDirectory)) {
       throw new Error(
         `Imports directory not found at path: ${importsDirectory}`
@@ -40,7 +40,7 @@ export class CreateMenuEntryCommand
     const menuItems = workspace.workspaces[data.workspace].menuItems;
     // Find PORTAL_MAIN_MENU
     const portalMainMenu = menuItems.find(
-      (menuItem: any) => menuItem.key === "PORTAL_MAIN_MENU"
+      (menuItem: { key: string }) => menuItem.key === "PORTAL_MAIN_MENU"
     );
 
     if (!portalMainMenu) {
@@ -49,7 +49,7 @@ export class CreateMenuEntryCommand
 
     // Check if custom apps menu entry already exist
     const myAppsMenuEntry = portalMainMenu.children.find(
-      (menuItem: any) => menuItem.key === "CORE_CUSTOM_APP"
+      (menuItem: { key: string }) => menuItem.key === "CORE_CUSTOM_APP"
     );
 
     const newEntry = createMenuEntryForApplication(
@@ -63,9 +63,9 @@ export class CreateMenuEntryCommand
       const customEntry = getCustomApplicationMenuEntry(data.roles);
       customEntry.children.push(newEntry);
       portalMainMenu.children.push(customEntry);
-    } else {      
-      let menuItemsWithoutNew = myAppsMenuEntry.children.filter(
-        (menuItem: any) => menuItem.key !== newEntry.key
+    } else {
+      const menuItemsWithoutNew = myAppsMenuEntry.children.filter(
+        (menuItem: { key: string }) => menuItem.key !== newEntry.key
       );
       menuItemsWithoutNew.push(newEntry);
       myAppsMenuEntry.roles = data.roles;

@@ -1,15 +1,30 @@
-name: Build
-
+name: build
 on:
-  workflow_dispatch:
   push:
     branches:
-      - 'main'
-      - 'fix/[0-9]+.[0-9]+.x'
-
+      - '*'
+      - '*/*'
+      - '**'
+  pull_request:
+    branches:
+      - main
+      - develop
+      - v3
 jobs:
-  build:
-    uses: onecx/ci-angular/.github/workflows/build.yml@v1
-    secrets: inherit
-    with:
-      helmEventTargetRepository: onecx/onecx-shell
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install deps
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm run test --configuration=ci
+      - name: Build
+        run: npm run build

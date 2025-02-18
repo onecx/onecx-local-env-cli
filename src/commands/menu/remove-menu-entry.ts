@@ -20,7 +20,7 @@ export class RemoveMenuEntryCommand
   run(data: RemoveMenuEntryData): void {
     logger.info("Removing menu entry...");
     // Validate imports directory exists
-    let importsDirectory = getEnvDirectory("./imports/workspace", data.env);
+    const importsDirectory = getEnvDirectory("./imports/workspace", data.env);
     if (!fs.existsSync(importsDirectory)) {
       throw new Error(
         `Imports directory not found at path: ${importsDirectory}`
@@ -36,7 +36,7 @@ export class RemoveMenuEntryCommand
     const menuItems = workspace.workspaces[data.workspace].menuItems;
     // Find PORTAL_MAIN_MENU
     const portalMainMenu = menuItems.find(
-      (menuItem: any) => menuItem.key === "PORTAL_MAIN_MENU"
+      (menuItem: { key: string }) => menuItem.key === "PORTAL_MAIN_MENU"
     );
 
     if (!portalMainMenu) {
@@ -45,7 +45,7 @@ export class RemoveMenuEntryCommand
 
     // Check if custom apps menu entry already exist
     const myAppsMenuEntry = portalMainMenu.children.find(
-      (menuItem: any) => menuItem.key === "CORE_CUSTOM_APP"
+      (menuItem: { key: string }) => menuItem.key === "CORE_CUSTOM_APP"
     );
 
     const newEntry = createMenuEntryForApplication(
@@ -55,8 +55,8 @@ export class RemoveMenuEntryCommand
       data.badge,
       []
     );
-    let menuItemsWithoutNew = myAppsMenuEntry.children.filter(
-      (menuItem: any) => menuItem.key !== newEntry.key
+    const menuItemsWithoutNew = myAppsMenuEntry.children.filter(
+      (menuItem: { key: string }) => menuItem.key !== newEntry.key
     );
     myAppsMenuEntry.children = menuItemsWithoutNew;
 
