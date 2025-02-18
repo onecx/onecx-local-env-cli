@@ -1,5 +1,5 @@
 {
-  "name": "@onecx/onecx-local-env-cli",
+  "name": "@onecx/local-env-cli",
   "version": "1.0.0",
   "description": "A CLI to interact with onecx-local-env",
   "main": "dist/index.js",
@@ -10,11 +10,13 @@
     "start": "npm run build && node dist/index.js",
     "lint": "npx eslint"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "onecx-local-env-cli": "dist/index.js"
-  },
-  "author": "",
-  "license": "ISC",
+  },  
+  "license": "MIT",
   "dependencies": {
     "@types/colors": "^1.2.4",
     "colors": "^1.4.0",
