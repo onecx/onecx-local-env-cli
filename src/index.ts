@@ -18,11 +18,9 @@ import { RemoveDockerCommand } from "./commands/docker/remove-entry";
 export class OneCXLocalEnvCLI {
   setup(): Command {
     const program = new Command();
-    const cli = program
-      .version("1.0.0")
-      .description(
-        "The onecx-local-env CLI helps to work with the local environment"
-      );
+    const cli = program.description(
+      "The onecx-local-env CLI helps to work with the local environment"
+    );
 
     cli
       .command("sync")
