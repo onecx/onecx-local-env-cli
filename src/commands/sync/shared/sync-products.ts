@@ -110,7 +110,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
     } else {
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
-        logger.info("Product removed successfully.");
+        logger.info("Product file removed successfully.");
       }
     }
   }
