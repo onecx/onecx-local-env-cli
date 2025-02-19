@@ -183,7 +183,7 @@ export class CreateDockerCommand
         PRODUCT_NAME: `${dashName}`,
       },
       depends_on: {
-        [`${underscoreName}-bff`]: {
+        [`${dashName}-bff`]: {
           condition: "service_healthy",
         },
       },
