@@ -67,6 +67,7 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
     new SyncMicroservices().synchronize(values, {
       ...data,
       customName: uiName,
+      type: "ui",
     });
 
     // Products

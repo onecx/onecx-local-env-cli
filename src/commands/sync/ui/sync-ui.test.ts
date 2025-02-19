@@ -143,6 +143,7 @@ describe("Sync UI Command", () => {
       expect(mockSyncMicroservices).toHaveBeenCalledWith(mockValues, {
         ...defaultData,
         customName: "onecx-mock",
+        type: "ui",
       });
     });
 

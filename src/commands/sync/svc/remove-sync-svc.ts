@@ -41,6 +41,7 @@ export class RemoveSyncSVCCommand implements OnecxCommand<SyncSVCData> {
     new SyncMicroservices().removeSynchronization(values, {
       ...data,
       customName: svcName,
+      type: "svc",
     });
     // Products
     new SyncProducts().removeSynchronization(values, {
