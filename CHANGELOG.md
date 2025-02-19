@@ -1,3 +1,9 @@
+## [1.2.0](https://github.com/onecx/onecx-local-env-cli/compare/v1.1.0...v1.2.0) (2025-02-19)
+
+### Features
+
+* added semantic-release/npm plugin ([#10](https://github.com/onecx/onecx-local-env-cli/issues/10)) ([2ef6ed7](https://github.com/onecx/onecx-local-env-cli/commit/2ef6ed74d6ed788f2107ae28af91d9bf17559d19))
+
 ## [1.1.0](https://github.com/onecx/onecx-local-env-cli/compare/v1.0.0...v1.1.0) (2025-02-19)
 
 ### Features
