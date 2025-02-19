@@ -1,6 +1,10 @@
 # onecx-local-env-cli
 This CLI helps you with setting up microservices in the  [onecx-local-env](http://github.com/onecx/onecx-local-env/).
 
+# Installation
+
+To use the command, the simplest way is to use npx: `npx @onecx/local-env-cli`.
+
 # Usage
 
 ## Synchronization
@@ -22,11 +26,11 @@ If you want to generate an **UI-Section** (by default ui, bff & svc are generate
 
 
 # Commands
-You can always display the help for a command using `onecx-local-env-cli help <command>`.
+You can always display the help for a command using `@onecx/local-env-cli help <command>`.
 
 ## sync
 ```shell
-onecx-local-env-cli sync [options] <type> <productName> <basePath> <pathToValues>
+@onecx/local-env-cli sync [options] <type> <productName> <basePath> <pathToValues>
 ```
 
 Arguments:
@@ -47,7 +51,7 @@ Options:
 
 ## menu
 ```shell
-onecx-local-env-cli menu [options] <operation> <appId> [url] [name]
+@onecx/local-env-cli menu [options] <operation> <appId> [url] [name]
 ```
 
 Arguments:
@@ -67,7 +71,7 @@ Options:
 
 ## docker
 ```shell
-onecx-local-env-cli docker [options] <name> <operation> <productName> [uiPath]
+@onecx/local-env-cli docker [options] <name> <operation> <productName> [uiPath]
 ```
 
 Arguments:
@@ -88,15 +92,15 @@ Options:
 # Local Testing & Installation
 To perform local testing you can install the CLI globally on your machine:
 Perform `npm run build && npm i -g .` inside the cli repository to build and install.
-Then the CLI is available via `onecx-local-env-cli` directly in your terminal.
+Then the CLI is available via `@onecx/local-env-cli` directly in your terminal.
 ~
 *HINT*: You can use an alias `onecli` for convenience: 
 ```shell
-echo 'alias onecli=onecx-local-env-cli' >> ~/.bashrc
+echo 'alias onecli=@onecx/local-env-cli' >> ~/.bashrc
 ```
 or for ZSH
 ```shell
-echo 'alias onecli=onecx-local-env-cli' >> ~/.zshrc
+echo 'alias onecli=@onecx/local-env-cli' >> ~/.zshrc
 ```
 
 # Examples
