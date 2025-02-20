@@ -26,11 +26,11 @@ If you want to generate an **UI-Section** (by default ui, bff & svc are generate
 
 
 # Commands
-You can always display the help for a command using `@onecx/local-env-cli help <command>`.
+You can always display the help for a command using `npx @onecx/local-env-cli help <command>`.
 
 ## sync
 ```shell
-@onecx/local-env-cli sync [options] <type> <productName> <basePath> <pathToValues>
+npx @onecx/local-env-cli sync [options] <type> <productName> <basePath> <pathToValues>
 ```
 
 Arguments:
@@ -51,7 +51,7 @@ Options:
 
 ## menu
 ```shell
-@onecx/local-env-cli menu [options] <operation> <appId> [url] [name]
+npx @onecx/local-env-cli menu [options] <operation> <appId> [url] [name]
 ```
 
 Arguments:
@@ -71,7 +71,7 @@ Options:
 
 ## docker
 ```shell
-@onecx/local-env-cli docker [options] <name> <operation> <productName> [uiPath]
+npx @onecx/local-env-cli docker [options] <name> <operation> <productName> [uiPath]
 ```
 
 Arguments:
@@ -92,19 +92,20 @@ Options:
 # Local Testing & Installation
 To perform local testing you can install the CLI globally on your machine:
 Perform `npm run build && npm i -g .` inside the cli repository to build and install.
-Then the CLI is available via `@onecx/local-env-cli` directly in your terminal.
+Then the CLI is available via `local-env-cli` directly in your terminal.
 ~
 *HINT*: You can use an alias `onecli` for convenience: 
 ```shell
-echo 'alias onecli=@onecx/local-env-cli' >> ~/.bashrc
+echo 'alias onecli=npx @onecx/local-env-cli' >> ~/.bashrc
 ```
 or for ZSH
 ```shell
-echo 'alias onecli=@onecx/local-env-cli' >> ~/.zshrc
+echo 'alias onecli=npx @onecx/local-env-cli' >> ~/.zshrc
 ```
 
 # Examples
 
+Hint: In this example we will use the alias command explained above.
 ## Simple Scenario
 The example scenario covers one product consisting of svc, bff and ui and is called `onecx-ocean`.
 Current directory contains the three folders for `ocean-svc`, `ocean-bff` and `ocean-ui` as well as our `onecx-local-env` folder.
