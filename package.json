@@ -1,6 +1,6 @@
 {
   "name": "@onecx/local-env-cli",
-  "version": "1.4.0",
+  "version": "1.5.1",
   "description": "A CLI to interact with onecx-local-env",
   "main": "dist/index.js",
   "scripts": {
@@ -14,8 +14,11 @@
     "access": "public"
   },
   "bin": {
-    "local-env-cli": "dist/index.js"
+    "local-env-cli": "./dist/index.js"
   },
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "dependencies": {
     "@types/colors": "^1.2.4",
