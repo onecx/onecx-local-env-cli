@@ -10,13 +10,15 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: 20      
+          node-version: 20
       - name: Install deps
         run: npm ci
       - name: Lint
         run: npm run lint
       - name: Test
         run: npm run test --configuration=ci
+      - name: Build
+        run: npm run build
       - name: Release
         run: npx semantic-release
         env:
