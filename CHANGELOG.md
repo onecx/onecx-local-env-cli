@@ -1,3 +1,9 @@
+## [1.4.2](https://github.com/onecx/onecx-local-env-cli/compare/v1.4.1...v1.4.2) (2025-02-20)
+
+### Bug Fixes
+
+* added build step to release ci ([#14](https://github.com/onecx/onecx-local-env-cli/issues/14)) ([004db17](https://github.com/onecx/onecx-local-env-cli/commit/004db1782cc3a28253e8ac489ad9afe1ced6bfdd))
+
 ## [1.4.1](https://github.com/onecx/onecx-local-env-cli/compare/v1.4.0...v1.4.1) (2025-02-20)
 
 ### Bug Fixes
