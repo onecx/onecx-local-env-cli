@@ -1,6 +1,6 @@
 {
   "name": "@onecx/local-env-cli",
-  "version": "1.5.1",
+  "version": "1.4.0",
   "description": "A CLI to interact with onecx-local-env",
   "main": "dist/index.js",
   "scripts": {
