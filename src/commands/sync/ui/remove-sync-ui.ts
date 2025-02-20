@@ -53,6 +53,7 @@ export class RemoveSyncUICommand implements SyncCommand<SyncUIData> {
     new SyncMicroservices().removeSynchronization(values, {
       ...data,
       customName: uiName,
+      type: "ui",
     });
 
     // Products

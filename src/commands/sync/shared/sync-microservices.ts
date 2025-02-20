@@ -9,6 +9,7 @@ import { ValuesSpecification } from "../types";
 
 export interface SyncMicroservicesparams extends SharedSyncData {
   customName: string;
+  type: "ui" | "bff" | "svc";
 }
 
 export class SyncMicroservices
@@ -30,7 +31,7 @@ export class SyncMicroservices
       version: "xxx",
       description: params.customName,
       name: params.customName,
-      type: "ui",
+      type: params.type,
     };
 
     if (dry) {

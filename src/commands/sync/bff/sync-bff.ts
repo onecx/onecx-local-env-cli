@@ -47,6 +47,7 @@ export class SyncBFFCommand implements SyncCommand<SyncBFFData> {
     new SyncMicroservices().synchronize(values, {
       ...data,
       customName: bffName,
+      type: "bff",
     });
     // Products
     new SyncProducts().synchronize(values, {

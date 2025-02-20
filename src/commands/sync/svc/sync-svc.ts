@@ -40,6 +40,7 @@ export class SyncSVCCommand implements SyncCommand<SyncSVCData> {
     new SyncMicroservices().synchronize(values, {
       ...data,
       customName: svcName,
+      type: "svc",
     });
     // Products
     new SyncProducts().synchronize(values, {

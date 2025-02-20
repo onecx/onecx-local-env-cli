@@ -47,6 +47,7 @@ export class RemoveSyncBFFCommand implements SyncCommand<SyncBFFData> {
     new SyncMicroservices().removeSynchronization(values, {
       ...data,
       customName: bffName,
+      type: "bff",
     });
     // Products
     new SyncProducts().removeSynchronization(values, {
