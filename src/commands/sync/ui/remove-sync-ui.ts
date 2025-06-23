@@ -6,7 +6,7 @@ import { retrieveValuesYAML } from "../shared/values.utils";
 import { SharedSyncData, SyncCommand } from "../sync-command";
 import { SyncMicrofrontends } from "./sync-microfrontends";
 import { SyncSlots } from "./sync-slots";
-import { ValuesSpecification } from "../types";
+import { OneCXValuesSpecification } from "../types";
 export interface SyncUIData extends SharedSyncData {
   productName: string;
   pathToValues: string;
@@ -15,27 +15,27 @@ export interface SyncUIData extends SharedSyncData {
 
 export class RemoveSyncUICommand implements SyncCommand<SyncUIData> {
   run(data: SyncUIData): void {
-    retrieveValuesYAML(data.pathToValues)
+    retrieveValuesYAML(data.pathToValues, data.onecxSectionPath)
       .then((values) => {
-        this.performSync(data, values as ValuesSpecification);
+        this.performSync(data, values as OneCXValuesSpecification);
       })
       .catch((r) => {
         logger.error(r.message);
       });
   }
 
-  performSync(data: SyncUIData, values: ValuesSpecification) {
+  performSync(data: SyncUIData, values: OneCXValuesSpecification) {
     logger.info("Remove synchronized UI...");
 
     // Check if repository is provided or custom name is provided
-    if (!values.app.image.repository && !data.name) {
+    if (!values.image.repository && !data.name) {
       throw new Error(
         "No repository found in values file and no custom name provided."
       );
     }
     let uiName = data.name ?? "";
-    if (values.app.image.repository) {
-      uiName = values.app.image.repository.split("/").pop() ?? "";
+    if (values.image.repository) {
+      uiName = values.image.repository.split("/").pop() ?? "";
     }
 
     // Microfrontends

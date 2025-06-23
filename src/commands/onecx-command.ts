@@ -1,3 +1,3 @@
 export interface OnecxCommand<T> {
-  run(data: T): void;
+  run(data: T): Promise<void> | void;
 }

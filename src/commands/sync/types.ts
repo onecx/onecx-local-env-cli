@@ -1,28 +1,26 @@
-export interface ValuesSpecification {
-  app: {
-    image: {
-      repository: string;
+export interface OneCXValuesSpecification {
+  image: {
+    repository: string;
+  };
+  operator?: {
+    slot: {
+      specs: {
+        [key: string]: {
+          name: string;
+          description: string;
+        };
+      };
     };
-    operator?: {
-      slot: {
-        specs: {
+    microfrontend: {
+      specs: {
+        [key: string]: MicrofrontendSpecification;
+      };
+    };
+    permission: {
+      spec: {
+        permissions: {
           [key: string]: {
-            name: string;
-            description: string;
-          };
-        };
-      };
-      microfrontend: {
-        specs: {
-          [key: string]: MicrofrontendSpecification;
-        };
-      };
-      permission: {
-        spec: {
-          permissions: {
-            [key: string]: {
-              [key: string]: string;
-            };
+            [key: string]: string;
           };
         };
       };

@@ -3,7 +3,7 @@ import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getEnvDirectory, logger } from "../../../util/utils";
 import { SharedSyncData } from "../sync-command";
-import { ValuesSpecification } from "../types";
+import { OneCXValuesSpecification } from "../types";
 
 export interface SyncProductsParams extends SharedSyncData {
   icon: string;
@@ -12,7 +12,7 @@ export interface SyncProductsParams extends SharedSyncData {
 
 export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
   synchronize(
-    _: ValuesSpecification,
+    _: OneCXValuesSpecification,
     { env, dry, ...params }: SyncProductsParams
   ): void {
     const importsDir = getEnvDirectory(
@@ -91,7 +91,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
   }
 
   removeSynchronization(
-    _: ValuesSpecification,
+    _: OneCXValuesSpecification,
     { env, dry, ...params }: SyncProductsParams
   ): void {
     const inUse = this.checkProductInUse(params.productName, env);

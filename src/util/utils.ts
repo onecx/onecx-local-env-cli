@@ -10,6 +10,19 @@ export function getEnvDirectory(subpath: string, env?: string): string {
   return envDir;
 }
 
+export function safeAccessViaPath(obj: unknown, path: string): unknown {
+  const keys = path.split(".");
+  let current: unknown = obj;
+  for (const key of keys) {
+    if (current && typeof current === "object" && key in current) {
+      current = (current as Record<string, unknown>)[key];
+    } else {
+      return undefined; // Return undefined if the path does not exist
+    }
+  }
+  return current;
+}
+
 export const logger = {
   info: (...msg: unknown[]) => console.log(colors.green("INFO:"), ...msg),
   warning: (...msg: unknown[]) => console.warn(colors.yellow("WARNING:"), ...msg),

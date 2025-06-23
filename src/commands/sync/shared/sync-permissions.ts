@@ -4,7 +4,7 @@ import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getEnvDirectory, logger } from "../../../util/utils";
 import { SharedSyncData } from "../sync-command";
-import { ValuesSpecification } from "../types";
+import { OneCXValuesSpecification } from "../types";
 
 export interface SyncPermissionsParams extends SharedSyncData {
   appName: string;
@@ -12,21 +12,16 @@ export interface SyncPermissionsParams extends SharedSyncData {
 }
 
 export class SyncPermissions
-  implements SynchronizationStep<SyncPermissionsParams>
-{
+  implements SynchronizationStep<SyncPermissionsParams> {
   synchronize(
-    values: ValuesSpecification,
+    values: OneCXValuesSpecification,
     { env, dry, ...params }: SyncPermissionsParams
   ): void {
     const importsDir = getEnvDirectory("./imports/permissions", env);
 
     if (
-      !values.app ||
-      !values.app.operator ||
-      !values.app.operator.permission ||
-      !values.app.operator.permission.spec ||
-      !values.app.operator.permission.spec.permissions ||
-      Object.keys(values.app.operator.permission.spec.permissions).length === 0
+      !values.operator?.permission?.spec?.permissions ||
+      Object.keys(values.operator.permission.spec.permissions).length === 0
     ) {
       logger.info(
         "No permissions found in values file. Skipping synchronization."
@@ -43,8 +38,8 @@ export class SyncPermissions
 
     // Build permissions array
     for (const [resource, uiPermissions] of Object.entries(
-      values.app.operator.permission.spec.permissions
-    ) as [string, { [key: string]: string }][]) {
+      values.operator.permission.spec.permissions
+    )) {
       permissionFile.permissions.push(
         ...Object.keys(uiPermissions).map((action: string) => ({
           resource,
@@ -76,22 +71,18 @@ export class SyncPermissions
     const assignments = JSON.parse(assignmentsFile);
 
     // Section for product in assignments
-    if (!assignments.assignments[params.productName]) {
-      assignments.assignments[params.productName] = {};
-    }
+    assignments.assignments[params.productName] ??= {}
     const productSection = assignments.assignments[params.productName];
     // Section for UI in product section
-    if (!productSection[params.appName]) {
-      productSection[params.appName] = {};
-    }
+    productSection[params.appName] ??= {};
     const uiSection = productSection[params.appName];
     // Target role
     const targetRole = params.roleName;
     // Clear & Set permissions
     uiSection[targetRole] = {};
     for (const [resource, uiPermissions] of Object.entries(
-      values.app.operator.permission.spec.permissions
-    ) as [string, { [key: string]: string }][]) {
+      values.operator.permission.spec.permissions
+    )) {
       uiSection[targetRole][resource] = Object.keys(uiPermissions);
     }
 
@@ -111,7 +102,7 @@ export class SyncPermissions
   }
 
   removeSynchronization(
-    _: ValuesSpecification,
+    _: OneCXValuesSpecification,
     { env, dry, ...params }: SyncPermissionsParams
   ): void {
     const importsDir = getEnvDirectory("./imports/permissions", env);
@@ -140,13 +131,7 @@ export class SyncPermissions
     const assignmentsFile = fs.readFileSync(assignmentsFilePath, "utf8");
     const assignments = JSON.parse(assignmentsFile);
 
-    if (
-      assignments.assignments[params.productName] &&
-      assignments.assignments[params.productName][params.appName] &&
-      assignments.assignments[params.productName][params.appName][
-        params.roleName
-      ]
-    ) {
+    if (assignments.assignments?.[params.productName]?.[params.appName]?.[params.roleName]) {
       if (dry) {
         logger.info(
           `Dry Run: Would remove assignments for role ${params.roleName} in UI ${params.appName} for product ${params.productName}`

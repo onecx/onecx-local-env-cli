@@ -5,7 +5,7 @@ import { getEnvDirectory, logger } from "../../../util/utils";
 
 import { red } from "colors/safe";
 import { SharedSyncData } from "../sync-command";
-import { ValuesSpecification } from "../types";
+import { OneCXValuesSpecification } from "../types";
 
 export interface SyncMicroservicesparams extends SharedSyncData {
   customName: string;
@@ -16,7 +16,7 @@ export class SyncMicroservices
   implements SynchronizationStep<SyncMicroservicesparams>
 {
   synchronize(
-    _: ValuesSpecification,
+    _: OneCXValuesSpecification,
     { env, dry, ...params }: SyncMicroservicesparams
   ): void {
     const importsDir = getEnvDirectory(
@@ -47,7 +47,7 @@ export class SyncMicroservices
   }
 
   removeSynchronization(
-    _: ValuesSpecification,
+    _: OneCXValuesSpecification,
     { env, dry, ...params }: SyncMicroservicesparams
   ): void {
     const importsDir = getEnvDirectory(

@@ -1,5 +1,5 @@
 import fs from "fs";
-import { getEnvDirectory, logger } from "../../../util/utils";
+import { getEnvDirectory, logger, safeAccessViaPath } from "../../../util/utils";
 import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncPermissions } from "../shared/sync-permissions";
 import { SyncProducts } from "../shared/sync-products";
@@ -8,7 +8,7 @@ import { SharedSyncData, SyncCommand } from "../sync-command";
 import { SyncMicrofrontends } from "./sync-microfrontends";
 import { SyncSlots } from "./sync-slots";
 import { SyncWorkspace } from "./sync-workspace";
-import { ValuesSpecification } from "../types";
+import { OneCXValuesSpecification } from "../types";
 
 export interface SyncUIData extends SharedSyncData {
   productName: string;
@@ -18,19 +18,17 @@ export interface SyncUIData extends SharedSyncData {
 
 export class SyncUICommand implements SyncCommand<SyncUIData> {
   async run(data: SyncUIData) {
-    const values = await retrieveValuesYAML(data.pathToValues);
-    this.performSync(data, values as ValuesSpecification);
+    const values = await retrieveValuesYAML(data.pathToValues, data.onecxSectionPath);    
+    this.performSync(data, values as OneCXValuesSpecification);
   }
 
-  performSync(data: SyncUIData, values: ValuesSpecification) {
+  performSync(data: SyncUIData, values: OneCXValuesSpecification) {
     logger.info("Syncing UI...");
     // Check if repository is provided or custom name is provided
     if (
       !(
         values &&
-        values.app &&
-        values.app.image &&
-        values.app.image.repository
+        safeAccessViaPath(values, "app.image.repository")
       ) &&
       !data.name
     ) {
@@ -39,8 +37,8 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
       );
     }
     let uiName = data.name ?? "";
-    if (values.app.image.repository) {
-      uiName = values.app.image.repository.split("/").pop() ?? "";
+    if (values.image.repository && uiName === "") {
+      uiName = values.image.repository.split("/").pop() ?? "";
     }
     logger.verbose(`UI name: ${uiName}`);
 

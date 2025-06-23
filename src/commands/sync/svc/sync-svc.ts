@@ -3,7 +3,7 @@ import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncProducts } from "../shared/sync-products";
 import { SharedSyncData, SyncCommand } from "../sync-command";
 import { retrieveValuesYAML } from "../shared/values.utils";
-import { ValuesSpecification } from "../types";
+import { OneCXValuesSpecification } from "../types";
 
 export interface SyncSVCData extends SharedSyncData {
   productName: string;
@@ -13,27 +13,27 @@ export interface SyncSVCData extends SharedSyncData {
 
 export class SyncSVCCommand implements SyncCommand<SyncSVCData> {
   run(data: SyncSVCData): void {
-    retrieveValuesYAML(data.pathToValues)
+    retrieveValuesYAML(data.pathToValues, data.onecxSectionPath)
       .then((values) => {
-        this.performSync(data, values as ValuesSpecification);
+        this.performSync(data, values as OneCXValuesSpecification);
       })
       .catch((r) => {
         logger.error(r.message);
       });
   }
 
-  performSync(data: SyncSVCData, values: ValuesSpecification) {
+  performSync(data: SyncSVCData, values: OneCXValuesSpecification) {
     logger.info("Syncing SVC...");
 
     // Check if repository is provided or custom name is provided
-    if (!values.app.image.repository && !data.name) {
+    if (!values.image.repository && !data.name) {
       throw new Error(
         "No repository found in values file and no custom name provided."
       );
     }
     let svcName = data.name ?? "";
-    if (values.app.image.repository) {
-      svcName = values.app.image.repository.split("/").pop() ?? "";
+    if (values.image.repository) {
+      svcName = values.image.repository.split("/").pop() ?? "";
     }
 
     // Microservices

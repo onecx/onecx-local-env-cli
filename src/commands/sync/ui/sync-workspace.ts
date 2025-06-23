@@ -6,7 +6,7 @@ import { SyncUIData } from "./sync-ui";
 import {
   ProductMicrofrontendSpecification,
   ProductSpecification,
-  ValuesSpecification,
+  OneCXValuesSpecification,
 } from "../types";
 
 export interface SyncWorkspacesParameters extends SyncUIData {
@@ -14,18 +14,15 @@ export interface SyncWorkspacesParameters extends SyncUIData {
 }
 
 export class SyncWorkspace
-  implements SynchronizationStep<SyncWorkspacesParameters>
-{
+  implements SynchronizationStep<SyncWorkspacesParameters> {
   synchronize(
-    values: ValuesSpecification,
+    values: OneCXValuesSpecification,
     { env, dry, ...params }: SyncWorkspacesParameters
   ): void {
     const importsDirectory = getEnvDirectory("./imports/workspace/", env);
 
     if (
-      !values.app ||
-      !values.app.operator ||
-      !values.app.operator.microfrontend
+      !values.operator?.microfrontend
     ) {
       logger.info(
         "No microfrontends found in values file. Skipping synchronization."
@@ -59,7 +56,7 @@ export class SyncWorkspace
       microfrontends: [],
     };
 
-    const microfrontends = values.app.operator.microfrontend.specs;
+    const microfrontends = values.operator.microfrontend.specs;
 
     if (product.microfrontends.length > 0) {
       logger.verbose(
@@ -118,15 +115,13 @@ export class SyncWorkspace
   }
 
   removeSynchronization(
-    values: ValuesSpecification,
+    values: OneCXValuesSpecification,
     { env, dry, ...params }: SyncWorkspacesParameters
   ): void {
     const importsDirectory = getEnvDirectory("./imports/workspace/", env);
 
     if (
-      !values.app ||
-      !values.app.operator ||
-      !values.app.operator.microfrontend
+      !values.operator?.microfrontend
     ) {
       logger.info("No microfrontends found in values file. Skipping removal.");
       return;

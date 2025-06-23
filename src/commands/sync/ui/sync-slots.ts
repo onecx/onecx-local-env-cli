@@ -5,7 +5,7 @@ import { SynchronizationStep } from "../../../util/synchronization-step";
 import { red } from "colors/safe";
 import { getEnvDirectory, logger } from "../../../util/utils";
 import { SyncUIData } from "./sync-ui";
-import { ValuesSpecification } from "../types";
+import { OneCXValuesSpecification } from "../types";
 
 export interface SyncSlotsparams extends SyncUIData {
   uiName: string;
@@ -13,7 +13,7 @@ export interface SyncSlotsparams extends SyncUIData {
 
 export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
   synchronize(
-    values: ValuesSpecification,
+    values: OneCXValuesSpecification,
     { env, dry, ...params }: SyncSlotsparams
   ): void {
     const importsDirectory = getEnvDirectory(
@@ -21,12 +21,12 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
       env
     );
 
-    if (!values.app || !values.app.operator || !values.app.operator.slot) {
+    if (!values?.operator?.slot) {
       logger.info("No slots found in values file. Skipping synchronization.");
       return;
     }
 
-    const slots = values.app.operator.slot.specs;
+    const slots = values.operator.slot.specs;
 
     for (const [key, spec] of Object.entries(slots) as [
       string,
@@ -59,7 +59,7 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
   }
 
   removeSynchronization(
-    values: ValuesSpecification,
+    values: OneCXValuesSpecification,
     { env, dry, ...params }: SyncSlotsparams
   ): void {
     const importsDirectory = getEnvDirectory(
@@ -67,12 +67,12 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
       env
     );
 
-    if (!values.app || !values.app.operator || !values.app.operator.slot) {
+    if (!values?.operator?.slot) {
       logger.info("Slots removed successfully.");
       return;
     }
 
-    const slots = values.app.operator.slot.specs;
+    const slots = values.operator.slot.specs;
 
     for (const key of Object.keys(slots)) {
       const fileName = `${params.productName}_${params.uiName}_${key}.json`;

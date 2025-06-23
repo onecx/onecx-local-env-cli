@@ -1,17 +1,32 @@
 import fs from "fs";
 import yaml from "js-yaml";
-import { ValuesSpecification } from "../types";
+import { OneCXValuesSpecification } from "../types";
+import { safeAccessViaPath } from "../../../util/utils";
 
 export async function retrieveValuesYAML(
-  pathOrUrl: string
-): Promise<ValuesSpecification | object> {
-  // Check if is URL
+  pathOrUrl: string,
+  onecxSectionPath: string
+): Promise<OneCXValuesSpecification | object> {
+  const valuesContent = await _loadValuesYAMLContent(pathOrUrl);
+  if (onecxSectionPath) {
+    const section = safeAccessViaPath(valuesContent, onecxSectionPath);
+    if (!section) {
+      throw new Error(`Section not found in values file at path: ${onecxSectionPath}`);
+    }
+    return section as OneCXValuesSpecification;
+  }
+  return valuesContent as OneCXValuesSpecification;
+}
+
+async function _loadValuesYAMLContent(
+  pathOrUrl: string,
+): Promise<object> {
   if (pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://")) {
     const response = await fetch(pathOrUrl);
     if (!response.ok) {
       throw new Error(`Failed to fetch ${pathOrUrl}: ${response.statusText}`);
     }
-    return (await yaml.load(await response.text())) as ValuesSpecification;
+    return (await yaml.load(await response.text()) as object);
   } else {
     if (!fs.existsSync(pathOrUrl)) {
       throw new Error(`Values file not found at path: ${pathOrUrl}`);
@@ -22,7 +37,7 @@ export async function retrieveValuesYAML(
           reject(err);
         } else {
           try {
-            resolve(yaml.load(data) as ValuesSpecification);
+            resolve(yaml.load(data) as object);
           } catch (parseErr) {
             reject(parseErr);
           }

@@ -9,8 +9,9 @@ export interface SharedSyncData {
   remove: boolean;
   verbose: boolean;
   name?: string;
+  onecxSectionPath: string;
 }
 
 export interface SyncCommand<T extends SharedSyncData> extends OnecxCommand<T> {
-  run(data: T): void;
+  run(data: T): Promise<void> | void;
 }
