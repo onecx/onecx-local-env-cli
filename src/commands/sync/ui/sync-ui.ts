@@ -1,14 +1,14 @@
 import fs from "fs";
-import { getEnvDirectory, logger, safeAccessViaPath } from "../../../util/utils";
+import { getEnvDirectory, logger } from "../../../util/utils";
 import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncPermissions } from "../shared/sync-permissions";
 import { SyncProducts } from "../shared/sync-products";
 import { retrieveValuesYAML } from "../shared/values.utils";
 import { SharedSyncData, SyncCommand } from "../sync-command";
+import { OneCXValuesSpecification } from "../types";
 import { SyncMicrofrontends } from "./sync-microfrontends";
 import { SyncSlots } from "./sync-slots";
 import { SyncWorkspace } from "./sync-workspace";
-import { OneCXValuesSpecification } from "../types";
 
 export interface SyncUIData extends SharedSyncData {
   productName: string;
@@ -18,7 +18,7 @@ export interface SyncUIData extends SharedSyncData {
 
 export class SyncUICommand implements SyncCommand<SyncUIData> {
   async run(data: SyncUIData) {
-    const values = await retrieveValuesYAML(data.pathToValues, data.onecxSectionPath);    
+    const values = await retrieveValuesYAML(data.pathToValues, data.onecxSectionPath);
     this.performSync(data, values as OneCXValuesSpecification);
   }
 
@@ -26,11 +26,8 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
     logger.info("Syncing UI...");
     // Check if repository is provided or custom name is provided
     if (
-      !(
-        values &&
-        safeAccessViaPath(values, "app.image.repository")
-      ) &&
-      !data.name
+      !values.image.repository
+      && !data.name
     ) {
       throw new Error(
         "No repository found in values file and no custom name provided."
