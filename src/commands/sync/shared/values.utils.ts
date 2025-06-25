@@ -1,21 +1,22 @@
 import fs from "fs";
 import yaml from "js-yaml";
 import { OneCXValuesSpecification } from "../types";
-import { safeAccessViaPath } from "../../../util/utils";
+import { defaultValuesMapper, safeAccessViaPath, ValuesMapper } from "../../../util/utils";
 
 export async function retrieveValuesYAML(
   pathOrUrl: string,
-  onecxSectionPath: string
-): Promise<OneCXValuesSpecification | object> {
+  onecxSectionPath: string,
+  valuesMapper: ValuesMapper = defaultValuesMapper
+): Promise<OneCXValuesSpecification> {
   const valuesContent = await _loadValuesYAMLContent(pathOrUrl);
-  if (onecxSectionPath) {
+  if (onecxSectionPath && !valuesMapper) {
     const section = safeAccessViaPath(valuesContent, onecxSectionPath);
     if (!section) {
       throw new Error(`Section not found in values file at path: ${onecxSectionPath}`);
     }
     return section as OneCXValuesSpecification;
   }
-  return valuesContent as OneCXValuesSpecification;
+  return valuesMapper(valuesContent) as OneCXValuesSpecification;
 }
 
 async function _loadValuesYAMLContent(

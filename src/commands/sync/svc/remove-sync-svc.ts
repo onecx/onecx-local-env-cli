@@ -1,22 +1,16 @@
-import { logger } from "../../../util/utils";
+import { logger, ValuesMapper } from "../../../util/utils";
 import { OnecxCommand } from "../../onecx-command";
 import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncProducts } from "../shared/sync-products";
 import { retrieveValuesYAML } from "../shared/values.utils";
-import { SharedSyncData } from "../sync-command";
 import { OneCXValuesSpecification } from "../types";
-
-export interface SyncSVCData extends SharedSyncData {
-  productName: string;
-  pathToValues: string;
-  basePath: string;
-}
+import { SyncSVCData } from "./sync-svc";
 
 export class RemoveSyncSVCCommand implements OnecxCommand<SyncSVCData> {
-  run(data: SyncSVCData): void {
-    retrieveValuesYAML(data.pathToValues, data.onecxSectionPath)
+  run(data: SyncSVCData, valuesMapper?: ValuesMapper): void {
+    retrieveValuesYAML(data.pathToValues, data.onecxSectionPath, valuesMapper)
       .then((values) => {
-        this.performSync(data, values as OneCXValuesSpecification);
+        this.performSync(data, values);
       })
       .catch((r) => {
         logger.error(r.message);

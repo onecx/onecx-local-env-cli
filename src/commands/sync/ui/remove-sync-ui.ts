@@ -1,23 +1,19 @@
-import { logger } from "../../../util/utils";
+import { logger, ValuesMapper } from "../../../util/utils";
 import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncPermissions } from "../shared/sync-permissions";
 import { SyncProducts } from "../shared/sync-products";
 import { retrieveValuesYAML } from "../shared/values.utils";
-import { SharedSyncData, SyncCommand } from "../sync-command";
+import { SyncCommand } from "../sync-command";
+import { OneCXValuesSpecification } from "../types";
 import { SyncMicrofrontends } from "./sync-microfrontends";
 import { SyncSlots } from "./sync-slots";
-import { OneCXValuesSpecification } from "../types";
-export interface SyncUIData extends SharedSyncData {
-  productName: string;
-  pathToValues: string;
-  basePath: string;
-}
+import { SyncUIData } from "./sync-ui";
 
 export class RemoveSyncUICommand implements SyncCommand<SyncUIData> {
-  run(data: SyncUIData): void {
-    retrieveValuesYAML(data.pathToValues, data.onecxSectionPath)
+  run(data: SyncUIData, valuesMapper?: ValuesMapper): void {
+    retrieveValuesYAML(data.pathToValues, data.onecxSectionPath, valuesMapper)
       .then((values) => {
-        this.performSync(data, values as OneCXValuesSpecification);
+        this.performSync(data, values);
       })
       .catch((r) => {
         logger.error(r.message);

@@ -1,8 +1,8 @@
-import { logger } from "../../../util/utils";
+import { logger, ValuesMapper } from "../../../util/utils";
 import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncProducts } from "../shared/sync-products";
-import { SharedSyncData, SyncCommand } from "../sync-command";
 import { retrieveValuesYAML } from "../shared/values.utils";
+import { SharedSyncData, SyncCommand } from "../sync-command";
 import { OneCXValuesSpecification } from "../types";
 
 export interface SyncSVCData extends SharedSyncData {
@@ -12,10 +12,10 @@ export interface SyncSVCData extends SharedSyncData {
 }
 
 export class SyncSVCCommand implements SyncCommand<SyncSVCData> {
-  run(data: SyncSVCData): void {
-    retrieveValuesYAML(data.pathToValues, data.onecxSectionPath)
+  run(data: SyncSVCData, valuesMapper?: ValuesMapper): void {
+    retrieveValuesYAML(data.pathToValues, data.onecxSectionPath, valuesMapper)
       .then((values) => {
-        this.performSync(data, values as OneCXValuesSpecification);
+        this.performSync(data, values);
       })
       .catch((r) => {
         logger.error(r.message);

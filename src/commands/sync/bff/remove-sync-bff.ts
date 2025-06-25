@@ -3,14 +3,10 @@ import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncPermissions } from "../shared/sync-permissions";
 import { SyncProducts } from "../shared/sync-products";
 import { retrieveValuesYAML } from "../shared/values.utils";
-import { SharedSyncData, SyncCommand } from "../sync-command";
+import { SyncCommand } from "../sync-command";
 import { OneCXValuesSpecification } from "../types";
+import { SyncBFFData } from "./sync-bff";
 
-export interface SyncBFFData extends SharedSyncData {
-  productName: string;
-  pathToValues: string;
-  basePath: string;
-}
 
 export class RemoveSyncBFFCommand implements SyncCommand<SyncBFFData> {
   run(data: SyncBFFData): void {

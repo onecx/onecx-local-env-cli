@@ -1,5 +1,6 @@
 import path from "path";
 import * as colors from "colors/safe";
+import { OneCXValuesSpecification } from "../commands/sync/types";
 
 export function getEnvDirectory(subpath: string, env?: string): string {
   let envDir = path.resolve(subpath);
@@ -33,3 +34,8 @@ export const logger = {
     }
   },
 };
+
+export type ValuesMapper = (values: object) => object;
+export function defaultValuesMapper(values: object): OneCXValuesSpecification {
+  return values as OneCXValuesSpecification;
+}

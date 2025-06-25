@@ -50,7 +50,7 @@ describe("Sync UI Command", () => {
     test("name not set and no repository", () => {
       jest.spyOn(valuesUtil, "retrieveValuesYAML").mockReturnValue(
         new Promise((r) => {
-          r({});
+          r(mockValues);
         })
       );
 

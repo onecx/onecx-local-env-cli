@@ -1,5 +1,5 @@
 import fs from "fs";
-import { getEnvDirectory, logger } from "../../../util/utils";
+import { getEnvDirectory, logger, ValuesMapper } from "../../../util/utils";
 import { SyncMicroservices } from "../shared/sync-microservices";
 import { SyncPermissions } from "../shared/sync-permissions";
 import { SyncProducts } from "../shared/sync-products";
@@ -17,9 +17,9 @@ export interface SyncUIData extends SharedSyncData {
 }
 
 export class SyncUICommand implements SyncCommand<SyncUIData> {
-  async run(data: SyncUIData) {
-    const values = await retrieveValuesYAML(data.pathToValues, data.onecxSectionPath);
-    this.performSync(data, values as OneCXValuesSpecification);
+  async run(data: SyncUIData, valuesMapper?: ValuesMapper): Promise<void> {
+    const values = await retrieveValuesYAML(data.pathToValues, data.onecxSectionPath, valuesMapper);
+    this.performSync(data, values);
   }
 
   performSync(data: SyncUIData, values: OneCXValuesSpecification) {

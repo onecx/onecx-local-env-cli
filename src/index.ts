@@ -14,7 +14,8 @@ import { logger } from "./util/utils";
 import { CreateDockerCommand } from "./commands/docker/create-entry";
 import { RemoveDockerCommand } from "./commands/docker/remove-entry";
 
-//add the following line
+export * from "./commands/index";
+
 export class OneCXLocalEnvCLI {
   setup(): Command {
     const program = new Command();
