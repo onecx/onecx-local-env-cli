@@ -26,7 +26,7 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
     logger.info("Syncing UI...");
     // Check if repository is provided or custom name is provided
     if (
-      !values.image.repository
+      !values?.image?.repository
       && !data.name
     ) {
       throw new Error(
@@ -34,7 +34,7 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
       );
     }
     let uiName = data.name ?? "";
-    if (values.image.repository && uiName === "") {
+    if (values?.image?.repository && uiName === "") {
       uiName = values.image.repository.split("/").pop() ?? "";
     }
     logger.verbose(`UI name: ${uiName}`);
