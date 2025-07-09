@@ -8,7 +8,7 @@ import { SyncMicrofrontends } from "./sync-microfrontends";
 import { SyncSlots } from "./sync-slots";
 import { SyncUICommand, SyncUIData } from "./sync-ui";
 import { SyncWorkspace } from "./sync-workspace";
-import { ValuesSpecification } from "../types";
+import { OneCXValuesSpecification } from "../types";
 
 describe("Sync UI Command", () => {
   let cmd: SyncUICommand;
@@ -23,13 +23,12 @@ describe("Sync UI Command", () => {
     dry: false,
     remove: false,
     verbose: false,
+    onecxSectionPath: 'app'
   };
 
-  const mockValues: ValuesSpecification = {
-    app: {
-      image: {
-        repository: "onecx-mock",
-      },
+  const mockValues: OneCXValuesSpecification = {
+    image: {
+      repository: "onecx-mock",
     },
   };
 
@@ -51,7 +50,7 @@ describe("Sync UI Command", () => {
     test("name not set and no repository", () => {
       jest.spyOn(valuesUtil, "retrieveValuesYAML").mockReturnValue(
         new Promise((r) => {
-          r({});
+          r(mockValues);
         })
       );
 

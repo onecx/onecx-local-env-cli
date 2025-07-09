@@ -1,6 +1,6 @@
-import { ValuesSpecification } from "../commands/sync/types";
+import { OneCXValuesSpecification } from "../commands/sync/types";
 
 export interface SynchronizationStep<T> {
-  synchronize(values: ValuesSpecification, input: T): void;
-  removeSynchronization(values: ValuesSpecification, input: T): void;
+  synchronize(values: OneCXValuesSpecification, input: T): void;
+  removeSynchronization(values: OneCXValuesSpecification, input: T): void;
 }

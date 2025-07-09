@@ -1,5 +1,6 @@
 import path from "path";
 import * as colors from "colors/safe";
+import { OneCXValuesSpecification } from "../commands/sync/types";
 
 export function getEnvDirectory(subpath: string, env?: string): string {
   let envDir = path.resolve(subpath);
@@ -8,6 +9,19 @@ export function getEnvDirectory(subpath: string, env?: string): string {
     envDir = path.resolve(localEnvPath, subpath);
   }
   return envDir;
+}
+
+export function safeAccessViaPath(obj: unknown, path: string): unknown {
+  const keys = path.split(".");
+  let current: unknown = obj;
+  for (const key of keys) {
+    if (current && typeof current === "object" && key in current) {
+      current = (current as Record<string, unknown>)[key];
+    } else {
+      return undefined; // Return undefined if the path does not exist
+    }
+  }
+  return current;
 }
 
 export const logger = {
@@ -20,3 +34,8 @@ export const logger = {
     }
   },
 };
+
+export type ValuesMapper = (values: object) => object;
+export function defaultValuesMapper(values: object): OneCXValuesSpecification {
+  return values as OneCXValuesSpecification;
+}

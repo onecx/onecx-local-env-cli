@@ -2,18 +2,17 @@ import fs from "fs";
 import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getEnvDirectory, logger } from "../../../util/utils";
+import { OneCXValuesSpecification } from "../types";
 import { SyncUIData } from "./sync-ui";
-import { MicrofrontendSpecification, ValuesSpecification } from "../types";
 
 export interface SyncMicrofrontendsparams extends SyncUIData {
   uiName: string;
 }
 
 export class SyncMicrofrontends
-  implements SynchronizationStep<SyncMicrofrontendsparams>
-{
+  implements SynchronizationStep<SyncMicrofrontendsparams> {
   synchronize(
-    values: ValuesSpecification,
+    values: OneCXValuesSpecification,
     { env, dry, ...params }: SyncMicrofrontendsparams
   ): void {
     const importsDirectory = getEnvDirectory(
@@ -22,9 +21,7 @@ export class SyncMicrofrontends
     );
 
     if (
-      !values.app ||
-      !values.app.operator ||
-      !values.app.operator.microfrontend
+      !values?.operator?.microfrontend
     ) {
       logger.info(
         "No microfrontends found in values file. Skipping synchronization."
@@ -32,12 +29,9 @@ export class SyncMicrofrontends
       return;
     }
 
-    const microfrontends = values.app.operator.microfrontend.specs;
+    const microfrontends = values.operator.microfrontend.specs;
 
-    for (const [key, spec] of Object.entries(microfrontends) as [
-      string,
-      MicrofrontendSpecification
-    ][]) {
+    for (const [key, spec] of Object.entries(microfrontends)) {
       const fileName = `${params.productName}_${params.uiName}_${key}.json`;
       const filePath = path.join(importsDirectory, fileName);
 
@@ -89,7 +83,7 @@ export class SyncMicrofrontends
   }
 
   removeSynchronization(
-    values: ValuesSpecification,
+    values: OneCXValuesSpecification,
     { env, dry, ...params }: SyncMicrofrontendsparams
   ): void {
     const importsDirectory = getEnvDirectory(
@@ -98,15 +92,13 @@ export class SyncMicrofrontends
     );
 
     if (
-      !values.app ||
-      !values.app.operator ||
-      !values.app.operator.microfrontend
+      !values?.operator?.microfrontend
     ) {
       logger.info("No microfrontends found in values file. Skipping.");
       return;
     }
 
-    const microfrontends = values.app.operator.microfrontend.specs;
+    const microfrontends = values.operator.microfrontend.specs;
 
     for (const key of Object.keys(microfrontends)) {
       const fileName = `${params.productName}_${params.uiName}_${key}.json`;

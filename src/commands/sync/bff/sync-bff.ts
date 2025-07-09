@@ -4,7 +4,7 @@ import { SyncPermissions } from "../shared/sync-permissions";
 import { SyncProducts } from "../shared/sync-products";
 import { retrieveValuesYAML } from "../shared/values.utils";
 import { SharedSyncData, SyncCommand } from "../sync-command";
-import { ValuesSpecification } from "../types";
+import { OneCXValuesSpecification } from "../types";
 
 export interface SyncBFFData extends SharedSyncData {
   productName: string;
@@ -14,27 +14,27 @@ export interface SyncBFFData extends SharedSyncData {
 
 export class SyncBFFCommand implements SyncCommand<SyncBFFData> {
   run(data: SyncBFFData): void {
-    retrieveValuesYAML(data.pathToValues)
+    retrieveValuesYAML(data.pathToValues, data.onecxSectionPath)
       .then((values) => {
-        this.performSync(data, values as ValuesSpecification);
+        this.performSync(data, values as OneCXValuesSpecification);
       })
       .catch((r) => {
         logger.error(r.message);
       });
   }
 
-  performSync(data: SyncBFFData, values: ValuesSpecification) {
+  performSync(data: SyncBFFData, values: OneCXValuesSpecification) {
     logger.info("Syncing BFF...");
 
     // Check if repository is provided or custom name is provided
-    if (!values.app.image.repository && !data.name) {
+    if (!values.image.repository && !data.name) {
       throw new Error(
         "No repository found in values file and no custom name provided."
       );
     }
     let bffName = data.name ?? "";
-    if (values.app.image.repository) {
-      bffName = values.app.image.repository.split("/").pop() ?? "";
+    if (values.image.repository) {
+      bffName = values.image.repository.split("/").pop() ?? "";
     }
 
     // Permissions

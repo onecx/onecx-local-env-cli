@@ -14,7 +14,8 @@ import { logger } from "./util/utils";
 import { CreateDockerCommand } from "./commands/docker/create-entry";
 import { RemoveDockerCommand } from "./commands/docker/remove-entry";
 
-//add the following line
+export * from "./commands/index";
+
 export class OneCXLocalEnvCLI {
   setup(): Command {
     const program = new Command();
@@ -43,6 +44,11 @@ export class OneCXLocalEnvCLI {
         "Custom name for the UI, if repository should not be used"
       )
       .option(
+        "--onecxSectionPath <yaml-path>",
+        "Path inside the YAML for the onecx section (e.g., image, routing, operator, etc.), separated by dots",
+        'app'
+      )
+      .option(
         "-r, --role <role>",
         "Role name for the assignments",
         "onecx-admin"
@@ -64,6 +70,7 @@ export class OneCXLocalEnvCLI {
           logger.verbose(`Product name: ${productName}`);
           logger.verbose(`Base path: ${basePath}`);
           logger.verbose(`Path to values: ${pathToValues}`);
+          logger.verbose(`Path to OneCX Section: ${options.path}`);
         }
         await this.getSyncCommandForType(type, options.remove).run({
           pathToValues,
