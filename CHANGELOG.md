@@ -1,3 +1,9 @@
+## [1.5.0](https://github.com/onecx/onecx-local-env-cli/compare/v1.4.2...v1.5.0) (2025-07-09)
+
+### Features
+
+* optimizations ([#16](https://github.com/onecx/onecx-local-env-cli/issues/16)) ([1d894c7](https://github.com/onecx/onecx-local-env-cli/commit/1d894c7097e65f7129685502c25702c59a24c3e8))
+
 ## [1.4.2](https://github.com/onecx/onecx-local-env-cli/compare/v1.4.1...v1.4.2) (2025-02-20)
 
 ### Bug Fixes
