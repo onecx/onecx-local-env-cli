@@ -70,7 +70,7 @@ export class OneCXLocalEnvCLI {
           logger.verbose(`Product name: ${productName}`);
           logger.verbose(`Base path: ${basePath}`);
           logger.verbose(`Path to values: ${pathToValues}`);
-          logger.verbose(`Path to OneCX Section: ${options.path}`);
+          logger.verbose(`Path to OneCX Section: ${options.onecxSectionPath}`);
         }
         await this.getSyncCommandForType(type, options.remove).run({
           pathToValues,

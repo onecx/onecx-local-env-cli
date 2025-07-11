@@ -6,7 +6,7 @@ import { defaultValuesMapper, safeAccessViaPath, ValuesMapper } from "../../../u
 export async function retrieveValuesYAML(
   pathOrUrl: string,
   onecxSectionPath: string,
-  valuesMapper: ValuesMapper = defaultValuesMapper
+  valuesMapper?: ValuesMapper
 ): Promise<OneCXValuesSpecification> {
   const valuesContent = await _loadValuesYAMLContent(pathOrUrl);
   if (onecxSectionPath && !valuesMapper) {
@@ -16,7 +16,8 @@ export async function retrieveValuesYAML(
     }
     return section as OneCXValuesSpecification;
   }
-  return valuesMapper(valuesContent) as OneCXValuesSpecification;
+  const mapper = valuesMapper || defaultValuesMapper;
+  return mapper(valuesContent) as OneCXValuesSpecification;
 }
 
 async function _loadValuesYAMLContent(

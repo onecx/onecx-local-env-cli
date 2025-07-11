@@ -24,6 +24,8 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
 
   performSync(data: SyncUIData, values: OneCXValuesSpecification) {
     logger.info("Syncing UI...");
+    console.log(values);
+    
     // Check if repository is provided or custom name is provided
     if (
       !values?.image?.repository
