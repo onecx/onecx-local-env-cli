@@ -23,7 +23,7 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
   }
 
   performSync(data: SyncUIData, values: OneCXValuesSpecification) {
-    logger.info("Syncing UI...");    
+    logger.info("Syncing UI...");
     // Check if repository is provided or custom name is provided
     if (
       !values?.image?.repository
