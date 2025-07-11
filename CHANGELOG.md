@@ -1,3 +1,9 @@
+## [1.5.1](https://github.com/onecx/onecx-local-env-cli/compare/v1.5.0...v1.5.1) (2025-07-11)
+
+### Bug Fixes
+
+* correctly apply mapper ([#17](https://github.com/onecx/onecx-local-env-cli/issues/17)) ([125203b](https://github.com/onecx/onecx-local-env-cli/commit/125203bbd6f14286b8d9a21b52d86c03a4eb577b))
+
 ## [1.5.0](https://github.com/onecx/onecx-local-env-cli/compare/v1.4.2...v1.5.0) (2025-07-09)
 
 ### Features
