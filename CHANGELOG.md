@@ -1,3 +1,9 @@
+## [1.5.2](https://github.com/onecx/onecx-local-env-cli/compare/v1.5.1...v1.5.2) (2025-09-02)
+
+### Bug Fixes
+
+* correct path and name ([#18](https://github.com/onecx/onecx-local-env-cli/issues/18)) ([a1498d5](https://github.com/onecx/onecx-local-env-cli/commit/a1498d52318c85855f721c42656c5a60d55eee30))
+
 ## [1.5.1](https://github.com/onecx/onecx-local-env-cli/compare/v1.5.0...v1.5.1) (2025-07-11)
 
 ### Bug Fixes
