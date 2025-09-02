@@ -32,15 +32,20 @@ export class SyncMicrofrontends
     const microfrontends = values.operator.microfrontend.specs;
 
     for (const [key, spec] of Object.entries(microfrontends)) {
-      const fileName = `${params.productName}_${params.uiName}_${key}.json`;
+      const fileName = `${params.productName}_${spec.remoteName}_${key}.json`;
       const filePath = path.join(importsDirectory, fileName);
+
+      let remotePath = `/mfe/${spec.remoteName}/`;
+      if(values?.routing?.path){
+        remotePath = values.routing.path;
+      }
 
       const jsonContent = {
         appVersion: "xxx",
         appName: spec.remoteName,
         description: spec.description,
-        remoteBaseUrl: `/mfe/${spec.remoteName}/`,
-        remoteEntry: `/mfe/${spec.remoteName}/remoteEntry.js`,
+        remoteBaseUrl: remotePath,
+        remoteEntry: `${remotePath}remoteEntry.js`,
         note: spec.note || "Imported MFE",
         exposedModule: spec.exposedModule,
         technology: spec.technology,
