@@ -2,6 +2,9 @@ export interface OneCXValuesSpecification {
   image: {
     repository: string;
   };
+  routing?: {
+    path?: string
+  }
   operator?: {
     slot: {
       specs: {
