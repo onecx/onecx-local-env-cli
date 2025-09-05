@@ -1,4 +1,6 @@
 # onecx-local-env-cli
+> The current version of `onecx-local-env-cli` is fully compatible with [`onecx-local-env` v2](https://github.com/onecx/onecx-local-env/blob/main/versions/v2/README.md). If you are still using [`onecx-local-env` v1](https://github.com/onecx/onecx-local-env/blob/main/versions/v1/README.md), please make sure to use `onecx-local-env-cli` version `1.5.2` or smaller by appending the version to all commands (e.g. `npx @onecx/local-env-cli@1.5.2 sync`). If you want to benefit from the latest features without switching to v2, you can also use the latest version of `onecx-local-env-cli` and manually adjust the generated output to be compatible with v1. Please refer to the [`onecx-local-env` documentation](https://onecx.github.io/docs/onecx-local-env/current/general/index.html) for more information on the differences between versions.
+
 This CLI helps you with setting up microservices in the  [onecx-local-env](http://github.com/onecx/onecx-local-env/).
 
 # Installation
