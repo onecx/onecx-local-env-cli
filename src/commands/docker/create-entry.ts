@@ -147,7 +147,12 @@ export class CreateDockerCommand
         `traefik.http.routers.${dashName}-svc.rule=Host(\`${dashName}-svc\`)`,
       ],
       env_file: ["common.env", "svc.env"],
-      networks: ["example"],
+      networks: ["default"],
+      profiles: [
+        "base",
+        `${dashName}`,
+        "all"
+      ],
     };
 
     const bff = {
@@ -171,8 +176,13 @@ export class CreateDockerCommand
         `traefik.http.routers.${dashName}-bff.rule=Host(\`${dashName}-bff\`)`,
       ],
       env_file: ["common.env", "bff.env"],
-      networks: ["example"],
-      profiles: ["all"],
+      networks: ["default"],
+      profiles: [
+        "base",
+        `${dashName}`,
+        `${dashName}-ui`,
+        "all"
+      ],
     };
 
     const ui = {
@@ -191,8 +201,13 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-ui.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-ui.rule=Host(\`local-proxy\`)&&PathPrefix(\`/mfe/${uiPath}/\`)`,
       ],
-      networks: ["example"],
-      profiles: ["all"],
+      networks: ["default"],
+      profiles: [
+        "base",
+        `${dashName}`,
+        `${dashName}-ui`,
+        "all"
+      ],
     };
 
     return { sectionTitle, ui, bff, svc };
