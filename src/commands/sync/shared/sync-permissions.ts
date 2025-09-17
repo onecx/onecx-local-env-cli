@@ -71,7 +71,7 @@ export class SyncPermissions
     if (!fs.existsSync(assignmentsFilePath)) {
       // Create new assignments structure and file
       assignments = {
-        id: `${params.assignmentsFilePrefix}-import-assignemnts-${params.productName}`,
+        id: `${params.assignmentsFilePrefix}-import-assignments-${params.productName}`,
         assignments: {},
       };
       fs.writeFileSync(
