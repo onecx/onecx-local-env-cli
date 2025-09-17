@@ -9,10 +9,12 @@ import { OneCXValuesSpecification } from "../types";
 export interface SyncPermissionsParams extends SharedSyncData {
   appName: string;
   roleName: string;
+  assignmentsFilePrefix?: string;
 }
 
 export class SyncPermissions
-  implements SynchronizationStep<SyncPermissionsParams> {
+  implements SynchronizationStep<SyncPermissionsParams>
+{
   synchronize(
     values: OneCXValuesSpecification,
     { env, dry, ...params }: SyncPermissionsParams
@@ -59,19 +61,33 @@ export class SyncPermissions
 
     // Sync assignments
     const assignmentsDir = getEnvDirectory("./imports/assignments", env);
-    const assignmentsFilePath = path.join(assignmentsDir, "onecx.json");
+    const assignmentsFilePath = getAssignmentsFilePath(
+      assignmentsDir,
+      params.assignmentsFilePrefix ?? "",
+      params.productName
+    );
 
+    let assignments;
     if (!fs.existsSync(assignmentsFilePath)) {
-      throw new Error(
-        `Assignments file not found at path: ${assignmentsFilePath}`
+      // Create new assignments structure and file
+      assignments = {
+        id: `${params.assignmentsFilePrefix}-import-assignemnts-${params.productName}`,
+        assignments: {},
+      };
+      fs.writeFileSync(
+        assignmentsFilePath,
+        JSON.stringify(assignments, null, 2)
       );
+      logger.info(
+        `Created new assignments file at path: ${assignmentsFilePath}`
+      );
+    } else {
+      const assignmentsFile = fs.readFileSync(assignmentsFilePath, "utf8");
+      assignments = JSON.parse(assignmentsFile);
     }
 
-    const assignmentsFile = fs.readFileSync(assignmentsFilePath, "utf8");
-    const assignments = JSON.parse(assignmentsFile);
-
     // Section for product in assignments
-    assignments.assignments[params.productName] ??= {}
+    assignments.assignments[params.productName] ??= {};
     const productSection = assignments.assignments[params.productName];
     // Section for UI in product section
     productSection[params.appName] ??= {};
@@ -120,7 +136,11 @@ export class SyncPermissions
 
     // Remove assignments
     const assignmentsDir = getEnvDirectory("./imports/assignments", env);
-    const assignmentsFilePath = path.join(assignmentsDir, "onecx.json");
+    const assignmentsFilePath = getAssignmentsFilePath(
+      assignmentsDir,
+      params.assignmentsFilePrefix ?? "",
+      params.productName
+    );
 
     if (!fs.existsSync(assignmentsFilePath)) {
       throw new Error(
@@ -131,7 +151,11 @@ export class SyncPermissions
     const assignmentsFile = fs.readFileSync(assignmentsFilePath, "utf8");
     const assignments = JSON.parse(assignmentsFile);
 
-    if (assignments.assignments?.[params.productName]?.[params.appName]?.[params.roleName]) {
+    if (
+      assignments.assignments?.[params.productName]?.[params.appName]?.[
+        params.roleName
+      ]
+    ) {
       if (dry) {
         logger.info(
           `Dry Run: Would remove assignments for role ${params.roleName} in UI ${params.appName} for product ${params.productName}`
@@ -163,4 +187,14 @@ export class SyncPermissions
 
     logger.info("Permissions removed successfully.");
   }
+}
+
+function getAssignmentsFilePath(
+  assignmentsDir: string,
+  prefix: string,
+  productName: string
+): string {
+  return prefix
+    ? path.join(assignmentsDir, `${prefix}_${productName}.json`)
+    : path.join(assignmentsDir, "onecx.json");
 }

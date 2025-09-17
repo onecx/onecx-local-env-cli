@@ -11,30 +11,41 @@ import {
 
 export interface SyncWorkspacesParameters extends SyncUIData {
   uiName: string;
+  workspaceName?: string;
 }
 
 export class SyncWorkspace
-  implements SynchronizationStep<SyncWorkspacesParameters> {
+  implements SynchronizationStep<SyncWorkspacesParameters>
+{
   synchronize(
     values: OneCXValuesSpecification,
     { env, dry, ...params }: SyncWorkspacesParameters
   ): void {
     const importsDirectory = getEnvDirectory("./imports/workspace/", env);
 
-    if (
-      !values.operator?.microfrontend
-    ) {
+    if (!values.operator?.microfrontend) {
       logger.info(
         "No microfrontends found in values file. Skipping synchronization."
       );
       return;
     }
 
-    const workspaceFilePath = path.join(importsDirectory, `onecx_admin.json`);
-    const workspaceFile = fs.readFileSync(workspaceFilePath, "utf8");
-    const workspace = JSON.parse(workspaceFile);
+    const workspaceName = params.workspaceName ?? "admin";
+    const workspaceAndProducts = findWorkspaceAndProducts(
+      importsDirectory,
+      workspaceName
+    );
+    const { workspaceFilePath, workspace, workspaceNameKey } =
+      workspaceAndProducts;
+    let existingProducts = workspaceAndProducts.existingProducts;
 
-    let existingProducts = workspace.workspaces.admin.products;
+    if (!workspaceNameKey || !workspaceFilePath || !existingProducts) {
+      logger.info(
+        `Workspace "${workspaceName}" not found in any file. Skipping synchronization.`
+      );
+      return;
+    }
+
     // Check if product exists
     const existingProduct = existingProducts.find(
       (product: ProductSpecification) =>
@@ -94,13 +105,14 @@ export class SyncWorkspace
 
     if (existingProduct) {
       existingProducts = existingProducts.map(
-        (_product: { productName: string }) =>
+        (_product: ProductSpecification) =>
           _product.productName === product.productName ? product : _product
       );
     } else {
       existingProducts.push(product);
     }
-    workspace.workspaces.admin.products = existingProducts;
+
+    workspace.workspaces[workspaceNameKey].products = existingProducts;
 
     if (dry) {
       logger.info(
@@ -120,25 +132,34 @@ export class SyncWorkspace
   ): void {
     const importsDirectory = getEnvDirectory("./imports/workspace/", env);
 
-    if (
-      !values.operator?.microfrontend
-    ) {
+    if (!values.operator?.microfrontend) {
       logger.info("No microfrontends found in values file. Skipping removal.");
       return;
     }
 
-    const workspaceFilePath = path.join(importsDirectory, `onecx_admin.json`);
-    const workspaceFile = fs.readFileSync(workspaceFilePath, "utf8");
-    const workspace = JSON.parse(workspaceFile);
+    const workspaceName = params.workspaceName ?? "admin";
+    const workspaceAndProducts = findWorkspaceAndProducts(
+      importsDirectory,
+      workspaceName
+    );
+    const { workspaceFilePath, workspace, workspaceNameKey } =
+      workspaceAndProducts;
+    let existingProducts = workspaceAndProducts.existingProducts;
 
-    let existingProducts = workspace.workspaces.admin.products;
+    if (!workspaceNameKey || !workspaceFilePath || !existingProducts) {
+      logger.info(
+        `Workspace "${workspaceName}" not found in any file. Skipping removal.`
+      );
+      return;
+    }
+
     // Remove product if it exists
     existingProducts = existingProducts.filter(
       (product: ProductSpecification) =>
         product.productName !== params.productName
     );
 
-    workspace.workspaces.admin.products = existingProducts;
+    workspace.workspaces[workspaceNameKey].products = existingProducts;
 
     if (dry) {
       logger.info(
@@ -151,4 +172,60 @@ export class SyncWorkspace
 
     logger.info("Workspace entries removed successfully.");
   }
+}
+
+/**
+ * Searches for a workspace JSON file in the given directory that matches the specified workspace name.
+ * Returns the file path, parsed workspace object, products array, and workspace key if found.
+ *
+ * The function looks for a workspace either by key or by the 'name' property within each workspace entry.
+ *
+ * @param importsDirectory - The directory containing workspace JSON files.
+ * @param workspaceName - The name of the workspace to search for.
+ * @returns An object containing:
+ *   - workspaceFilePath: The path to the matching workspace file (if found).
+ *   - workspace: The parsed workspace JSON object (if found).
+ *   - existingProducts: The array of products for the matched workspace (if found).
+ *   - workspaceNameKey: The key of the matched workspace (if found).
+ *   If no match is found, returns an empty object.
+ */
+function findWorkspaceAndProducts(
+  importsDirectory: string,
+  workspaceName: string
+): {
+  workspaceFilePath?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  workspace?: any;
+  existingProducts?: ProductSpecification[];
+  workspaceNameKey?: string;
+} {
+  const workspaceFiles = fs
+    .readdirSync(importsDirectory)
+    .filter((f) => f.endsWith(".json"));
+  for (const file of workspaceFiles) {
+    const filePath = path.join(importsDirectory, file);
+    const fileContent = fs.readFileSync(filePath, "utf8");
+    const workspaceJson = JSON.parse(fileContent);
+
+    for (const [key, value] of Object.entries(workspaceJson.workspaces)) {
+      if (key === workspaceName) {
+        return {
+          workspaceFilePath: filePath,
+          workspace: workspaceJson,
+          existingProducts: workspaceJson.workspaces[key].products,
+          workspaceNameKey: key,
+        };
+      }
+      if ((value as { name: string }).name === workspaceName) {
+        return {
+          workspaceFilePath: filePath,
+          workspace: workspaceJson,
+          existingProducts: (value as { products: ProductSpecification[] })
+            .products,
+          workspaceNameKey: (value as { name: string }).name,
+        };
+      }
+    }
+  }
+  return {};
 }

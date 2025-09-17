@@ -45,6 +45,7 @@ Options:
 -  `-e, --env <path>`       Path to the local environment (default: "./")
 -  `-n, --name <name>`      Custom name for the UI, if repository should not be used
 -  `-r, --role <role>`      Role name for the assignments (default: "onecx-admin")
+-  `-w, --workspaceName <workspace>` Workspace name to add the App to (default: "admin")
 -  `-i, --icon <iconName>`  The icon of the product (default: "pi-briefcase")
 -  `-d, --dry`             If should do a dry run (default: false)
 -  `-R, --remove`         If synchronization should be removed (default: false)

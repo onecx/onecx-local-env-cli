@@ -46,7 +46,7 @@ export class OneCXLocalEnvCLI {
       .option(
         "--onecxSectionPath <yaml-path>",
         "Path inside the YAML for the onecx section (e.g., image, routing, operator, etc.), separated by dots",
-        'app'
+        "app"
       )
       .option(
         "-r, --role <role>",
@@ -54,9 +54,19 @@ export class OneCXLocalEnvCLI {
         "onecx-admin"
       )
       .option(
+        "--workspaceName <workspace>",
+        "Workspace name to add the App to",
+        "admin"
+      )
+      .option(
         "-i, --icon <iconName>",
         "The icon of the product",
         "pi-briefcase"
+      )
+      .option(
+        "--assignmentsFilePrefix <prefix>",
+        "Prefix for assignments file",
+        ""
       )
       .option("-d, --dry", "If should do a dry run", false)
       .option("-R, --remove", "If synchronization should be removed", false)

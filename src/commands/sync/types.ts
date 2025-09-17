@@ -3,8 +3,8 @@ export interface OneCXValuesSpecification {
     repository: string;
   };
   routing?: {
-    path?: string
-  }
+    path?: string;
+  };
   operator?: {
     slot: {
       specs: {
@@ -44,6 +44,8 @@ export interface MicrofrontendSpecification {
 
 export interface ProductSpecification {
   productName: string;
+  baseUrl: string;
+  microfrontends: ProductMicrofrontendSpecification[];
 }
 
 export interface ProductMicrofrontendSpecification {
