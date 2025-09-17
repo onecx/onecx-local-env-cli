@@ -1,3 +1,9 @@
+## [1.6.1](https://github.com/onecx/onecx-local-env-cli/compare/v1.6.0...v1.6.1) (2025-09-17)
+
+### Bug Fixes
+
+* sync ui to specific workspace ([#20](https://github.com/onecx/onecx-local-env-cli/issues/20)) ([3ab5f7d](https://github.com/onecx/onecx-local-env-cli/commit/3ab5f7de5eb26db7d0373ca1a4a8d8344c0fae16))
+
 ## [1.6.0](https://github.com/onecx/onecx-local-env-cli/compare/v1.5.2...v1.6.0) (2025-09-12)
 
 ### Features
