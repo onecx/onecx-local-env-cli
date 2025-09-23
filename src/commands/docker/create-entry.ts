@@ -123,6 +123,7 @@ export class CreateDockerCommand
     const underscoreName = productName.replace(/-/g, "_");
     const dashName = productName.replace(/_/g, "-");
     const sectionTitle = ` ########## ${dashName}`;
+    const versionPrefix = './versions/v2';
 
     const svc = {
       image: `\${${underscoreName.toUpperCase()}_SVC}`,
@@ -146,7 +147,7 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-svc.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-svc.rule=Host(\`${dashName}-svc\`)`,
       ],
-      env_file: ["./versions/v2/common.env", "./versions/v2/svc.env"],
+      env_file: [`${versionPrefix}/common.env`, `${versionPrefix}/svc.env`],
       networks: ["default"],
       profiles: [
         "base",
@@ -175,7 +176,7 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-bff.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-bff.rule=Host(\`${dashName}-bff\`)`,
       ],
-      env_file: ["./versions/v2/common.env", "./versions/v2/bff.env"],
+      env_file: [`${versionPrefix}/common.env`, `${versionPrefix}/bff.env`],
       networks: ["default"],
       profiles: [
         "base",
