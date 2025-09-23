@@ -146,7 +146,7 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-svc.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-svc.rule=Host(\`${dashName}-svc\`)`,
       ],
-      env_file: ["common.env", "svc.env"],
+      env_file: ["./versions/v2/common.env", "./versions/v2/svc.env"],
       networks: ["default"],
       profiles: [
         "base",
@@ -175,7 +175,7 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-bff.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-bff.rule=Host(\`${dashName}-bff\`)`,
       ],
-      env_file: ["common.env", "bff.env"],
+      env_file: ["./versions/v2/common.env", "./versions/v2/bff.env"],
       networks: ["default"],
       profiles: [
         "base",
