@@ -3,6 +3,7 @@ import { OnecxCommand } from "../onecx-command";
 import fs from "fs";
 import yaml from "js-yaml";
 import { DockerFileContent } from "../sync/types";
+import { localEnvVersion } from "../../constants";
 
 export interface CreateDockerCommandParameters {
   name: string;
@@ -123,6 +124,7 @@ export class CreateDockerCommand
     const underscoreName = productName.replace(/-/g, "_");
     const dashName = productName.replace(/_/g, "-");
     const sectionTitle = ` ########## ${dashName}`;
+    const versionPrefix = `./versions/${localEnvVersion}`;
 
     const svc = {
       image: `\${${underscoreName.toUpperCase()}_SVC}`,
@@ -146,7 +148,7 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-svc.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-svc.rule=Host(\`${dashName}-svc\`)`,
       ],
-      env_file: ["common.env", "svc.env"],
+      env_file: [`${versionPrefix}/common.env`, `${versionPrefix}/svc.env`],
       networks: ["default"],
       profiles: [
         "base",
@@ -175,7 +177,7 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-bff.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-bff.rule=Host(\`${dashName}-bff\`)`,
       ],
-      env_file: ["common.env", "bff.env"],
+      env_file: [`${versionPrefix}/common.env`, `${versionPrefix}/bff.env`],
       networks: ["default"],
       profiles: [
         "base",
