@@ -3,6 +3,7 @@ import { OnecxCommand } from "../onecx-command";
 import fs from "fs";
 import yaml from "js-yaml";
 import { DockerFileContent } from "../sync/types";
+import { localEnvVersion } from "../../constants";
 
 export interface CreateDockerCommandParameters {
   name: string;
@@ -123,7 +124,7 @@ export class CreateDockerCommand
     const underscoreName = productName.replace(/-/g, "_");
     const dashName = productName.replace(/_/g, "-");
     const sectionTitle = ` ########## ${dashName}`;
-    const versionPrefix = './versions/v2';
+    const versionPrefix = `./versions/${localEnvVersion}`;
 
     const svc = {
       image: `\${${underscoreName.toUpperCase()}_SVC}`,
