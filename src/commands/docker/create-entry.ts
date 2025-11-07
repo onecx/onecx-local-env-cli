@@ -149,7 +149,7 @@ export class CreateDockerCommand
         `traefik.http.routers.${dashName}-svc.rule=Host(\`${dashName}-svc\`)`,
       ],
       env_file: [`${versionPrefix}/common.env`, `${versionPrefix}/svc.env`],
-      networks: ["default"],
+      networks: ["onecx"],
       profiles: [
         "base",
         `${dashName}`,
@@ -178,7 +178,7 @@ export class CreateDockerCommand
         `traefik.http.routers.${dashName}-bff.rule=Host(\`${dashName}-bff\`)`,
       ],
       env_file: [`${versionPrefix}/common.env`, `${versionPrefix}/bff.env`],
-      networks: ["default"],
+      networks: ["onecx"],
       profiles: [
         "base",
         `${dashName}`,
@@ -203,7 +203,7 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-ui.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-ui.rule=Host(\`local-proxy\`)&&PathPrefix(\`/mfe/${uiPath}/\`)`,
       ],
-      networks: ["default"],
+      networks: ["onecx"],
       profiles: [
         "base",
         `${dashName}`,
