@@ -67,7 +67,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
     /**
      * For assignments
      */
-    const assignmentsDir = getEnvDirectory("./onecx-data/assignments", env);
+    const assignmentsDir = getEnvDirectory("./onecx-data/permission-assignment", env);
     const assignmentsFilePath = path.join(assignmentsDir, "onecx.json");
 
     if (!fs.existsSync(assignmentsFilePath)) {
