@@ -3,7 +3,6 @@ import { OnecxCommand } from "../onecx-command";
 import fs from "fs";
 import yaml from "js-yaml";
 import { DockerFileContent } from "../sync/types";
-import { localEnvVersion } from "../../constants";
 
 export interface CreateDockerCommandParameters {
   name: string;
@@ -124,11 +123,11 @@ export class CreateDockerCommand
     const underscoreName = productName.replace(/-/g, "_");
     const dashName = productName.replace(/_/g, "-");
     const sectionTitle = ` ########## ${dashName}`;
-    const versionPrefix = `./versions/${localEnvVersion}`;
 
     const svc = {
       image: `\${${underscoreName.toUpperCase()}_SVC}`,
       environment: {
+        "<<": "*svc_multi_tenancy",
         QUARKUS_DATASOURCE_USERNAME: underscoreName,
         QUARKUS_DATASOURCE_PASSWORD: underscoreName,
         QUARKUS_DATASOURCE_JDBC_URL: `jdbc:postgresql://postgresdb:5432/${underscoreName}?sslmode=disable`,
@@ -148,7 +147,6 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-svc.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-svc.rule=Host(\`${dashName}-svc\`)`,
       ],
-      env_file: [`${versionPrefix}/common.env`, `${versionPrefix}/svc.env`],
       networks: ["onecx"],
       profiles: [
         "minimal",
@@ -160,6 +158,7 @@ export class CreateDockerCommand
     const bff = {
       image: `\${${underscoreName.toUpperCase()}_BFF}`,
       environment: {
+        "<<": "*bff_environment",
         ONECX_PERMISSIONS_PRODUCT_NAME: dashName,
       },
       healthcheck: {
@@ -177,7 +176,6 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-bff.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-bff.rule=Host(\`${dashName}-bff\`)`,
       ],
-      env_file: [`${versionPrefix}/common.env`, `${versionPrefix}/bff.env`],
       networks: ["onecx"],
       profiles: [
         "minimal",
