@@ -140,7 +140,7 @@ export class CreateDockerCommand
         retries: 3,
       },
       depends_on: {
-        postgresdb: {
+        [`keycloak-app`]: {
           condition: "service_healthy",
         },
       },
