@@ -20,7 +20,7 @@ export class SyncMicroservices
     { env, dry, ...params }: SyncMicroservicesparams
   ): void {
     const importsDir = getEnvDirectory(
-      "./imports/product-store/microservices/",
+      "./onecx-data/product-store/microservices/",
       env
     );
 
@@ -51,7 +51,7 @@ export class SyncMicroservices
     { env, dry, ...params }: SyncMicroservicesparams
   ): void {
     const importsDir = getEnvDirectory(
-      "./imports/product-store/microservices/",
+      "./onecx-data/product-store/microservices/",
       env
     );
 

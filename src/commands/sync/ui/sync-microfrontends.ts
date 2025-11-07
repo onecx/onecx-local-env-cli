@@ -16,7 +16,7 @@ export class SyncMicrofrontends
     { env, dry, ...params }: SyncMicrofrontendsparams
   ): void {
     const importsDirectory = getEnvDirectory(
-      "./imports/product-store/microfrontends",
+      "./onecx-data/product-store/microfrontends",
       env
     );
 
@@ -92,7 +92,7 @@ export class SyncMicrofrontends
     { env, dry, ...params }: SyncMicrofrontendsparams
   ): void {
     const importsDirectory = getEnvDirectory(
-      "./imports/product-store/microfrontends",
+      "./onecx-data/product-store/microfrontends",
       env
     );
 

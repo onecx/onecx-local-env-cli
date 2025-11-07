@@ -17,7 +17,7 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
     { env, dry, ...params }: SyncSlotsparams
   ): void {
     const importsDirectory = getEnvDirectory(
-      "./imports/product-store/slots",
+      "./onecx-data/product-store/slots",
       env
     );
 
@@ -63,7 +63,7 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
     { env, dry, ...params }: SyncSlotsparams
   ): void {
     const importsDirectory = getEnvDirectory(
-      "./imports/product-store/slots",
+      "./onecx-data/product-store/slots",
       env
     );
 

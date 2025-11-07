@@ -24,7 +24,7 @@ export class CreateMenuEntryCommand
     data.roles = Array.isArray(data.roles) ? data.roles : [data.roles];
 
     // Validate imports directory exists
-    const importsDirectory = getEnvDirectory("./imports/workspace", data.env);
+    const importsDirectory = getEnvDirectory("./onecx-data/workspace", data.env);
     if (!fs.existsSync(importsDirectory)) {
       throw new Error(
         `Imports directory not found at path: ${importsDirectory}`

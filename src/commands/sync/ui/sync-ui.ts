@@ -40,7 +40,7 @@ export class SyncUICommand implements SyncCommand<SyncUIData> {
     logger.verbose(`UI name: ${uiName}`);
 
     // Validate imports directory exists
-    const importsDirectory = getEnvDirectory("./imports", data.env);
+    const importsDirectory = getEnvDirectory("./onecx-data", data.env);
     if (!fs.existsSync(importsDirectory)) {
       throw new Error(
         `Imports directory not found at path: ${importsDirectory}`

@@ -16,7 +16,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
     { env, dry, ...params }: SyncProductsParams
   ): void {
     const importsDir = getEnvDirectory(
-      "./imports/product-store/products/",
+      "./onecx-data/product-store/products/",
       env
     );
 
@@ -45,7 +45,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
   }
 
   checkProductInUse(productName: string, env: string): boolean {
-    const importsDir = getEnvDirectory("./imports/", env);
+    const importsDir = getEnvDirectory("./onecx-data/", env);
 
     /**
      * For microservices, permissions, microfrontends and slots we can check if a file exist
@@ -67,7 +67,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
     /**
      * For assignments
      */
-    const assignmentsDir = getEnvDirectory("./imports/assignments", env);
+    const assignmentsDir = getEnvDirectory("./onecx-data/assignments", env);
     const assignmentsFilePath = path.join(assignmentsDir, "onecx.json");
 
     if (!fs.existsSync(assignmentsFilePath)) {
@@ -99,7 +99,7 @@ export class SyncProducts implements SynchronizationStep<SyncProductsParams> {
       return;
     }
     const importsDir = getEnvDirectory(
-      "./imports/product-store/products/",
+      "./onecx-data/product-store/products/",
       env
     );
 
