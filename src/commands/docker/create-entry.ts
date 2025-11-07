@@ -151,7 +151,7 @@ export class CreateDockerCommand
       env_file: [`${versionPrefix}/common.env`, `${versionPrefix}/svc.env`],
       networks: ["onecx"],
       profiles: [
-        "base",
+        "minimal",
         `${dashName}`,
         "all"
       ],
@@ -180,9 +180,8 @@ export class CreateDockerCommand
       env_file: [`${versionPrefix}/common.env`, `${versionPrefix}/bff.env`],
       networks: ["onecx"],
       profiles: [
-        "base",
+        "minimal",
         `${dashName}`,
-        `${dashName}-ui`,
         "all"
       ],
     };
@@ -205,9 +204,8 @@ export class CreateDockerCommand
       ],
       networks: ["onecx"],
       profiles: [
-        "base",
+        "minimal",
         `${dashName}`,
-        `${dashName}-ui`,
         "all"
       ],
     };
