@@ -21,7 +21,7 @@ export class SyncWorkspace
     values: OneCXValuesSpecification,
     { env, dry, ...params }: SyncWorkspacesParameters
   ): void {
-    const importsDirectory = getEnvDirectory("./imports/workspace/", env);
+    const importsDirectory = getEnvDirectory("./onecx-data/workspace/", env);
 
     if (!values.operator?.microfrontend) {
       logger.info(
@@ -30,7 +30,7 @@ export class SyncWorkspace
       return;
     }
 
-    const workspaceName = params.workspaceName ?? "admin";
+    const workspaceName = params.workspaceName ?? "ADMIN";
     const workspaceAndProducts = findWorkspaceAndProducts(
       importsDirectory,
       workspaceName
@@ -130,14 +130,14 @@ export class SyncWorkspace
     values: OneCXValuesSpecification,
     { env, dry, ...params }: SyncWorkspacesParameters
   ): void {
-    const importsDirectory = getEnvDirectory("./imports/workspace/", env);
+    const importsDirectory = getEnvDirectory("./onecx-data/workspace/", env);
 
     if (!values.operator?.microfrontend) {
       logger.info("No microfrontends found in values file. Skipping removal.");
       return;
     }
 
-    const workspaceName = params.workspaceName ?? "admin";
+    const workspaceName = params.workspaceName ?? "ADMIN";
     const workspaceAndProducts = findWorkspaceAndProducts(
       importsDirectory,
       workspaceName

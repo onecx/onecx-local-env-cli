@@ -3,7 +3,6 @@ import { OnecxCommand } from "../onecx-command";
 import fs from "fs";
 import yaml from "js-yaml";
 import { DockerFileContent } from "../sync/types";
-import { localEnvVersion } from "../../constants";
 
 export interface CreateDockerCommandParameters {
   name: string;
@@ -29,13 +28,13 @@ export class CreateDockerCommand
     }
     this.createAdaptedDockerCompose(data);
     logger.info(
-      `Created custom docker-compose file at ${data.name}.docker-compose.yml`
+      `Created custom docker-compose file at ${data.name}.compose.yaml`
     );
   }
 
   createAdaptedDockerCompose(data: CreateDockerCommandParameters) {
     const envDirectory = getEnvDirectory("", data.env);
-    const fileName = `${data.name}.docker-compose.yml`;
+    const fileName = `${data.name}.compose.yaml`;
     const filePath = `${envDirectory}/${fileName}`;
 
     let fileContent: DockerFileContent = {};
@@ -47,7 +46,7 @@ export class CreateDockerCommand
     const dockerData = this.generateDocker(data);
 
     if (!fileContent.include) {
-      fileContent.include = ["docker-compose.yaml"];
+      fileContent.include = ["compose.yaml"];
     }
 
     if (!fileContent.services) {
@@ -75,9 +74,15 @@ export class CreateDockerCommand
       }
     }
 
-    const yamlContent = yaml.dump(fileContent, {
+    let yamlContent = yaml.dump(fileContent, {
       lineWidth: -1,
+      quotingType: '"',
+      forceQuotes: false,
     });
+    
+    // Fix YAML merge key syntax - remove quotes around << and anchor references
+    yamlContent = yamlContent.replace(/"<<":\s*"(\*[^"]+)"/g, '<<: $1');
+    
     if (data.dry) {
       logger.info(
         `Dry Run: Would write to ${filePath} with content:\n${yamlContent}`
@@ -124,11 +129,12 @@ export class CreateDockerCommand
     const underscoreName = productName.replace(/-/g, "_");
     const dashName = productName.replace(/_/g, "-");
     const sectionTitle = ` ########## ${dashName}`;
-    const versionPrefix = `./versions/${localEnvVersion}`;
 
     const svc = {
       image: `\${${underscoreName.toUpperCase()}_SVC}`,
+      container_name: `${dashName}-svc`,
       environment: {
+        "<<": "*svc_multi_tenancy",
         QUARKUS_DATASOURCE_USERNAME: underscoreName,
         QUARKUS_DATASOURCE_PASSWORD: underscoreName,
         QUARKUS_DATASOURCE_JDBC_URL: `jdbc:postgresql://postgresdb:5432/${underscoreName}?sslmode=disable`,
@@ -140,7 +146,7 @@ export class CreateDockerCommand
         retries: 3,
       },
       depends_on: {
-        postgresdb: {
+        [`keycloak-app`]: {
           condition: "service_healthy",
         },
       },
@@ -148,18 +154,18 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-svc.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-svc.rule=Host(\`${dashName}-svc\`)`,
       ],
-      env_file: [`${versionPrefix}/common.env`, `${versionPrefix}/svc.env`],
-      networks: ["default"],
+      networks: ["onecx"],
       profiles: [
-        "base",
-        `${dashName}`,
-        "all"
+        "all",
+        "data-import"
       ],
     };
 
     const bff = {
       image: `\${${underscoreName.toUpperCase()}_BFF}`,
+      container_name: `${dashName}-bff`,
       environment: {
+        "<<": "*bff_environment",
         ONECX_PERMISSIONS_PRODUCT_NAME: dashName,
       },
       healthcheck: {
@@ -177,18 +183,15 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-bff.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-bff.rule=Host(\`${dashName}-bff\`)`,
       ],
-      env_file: [`${versionPrefix}/common.env`, `${versionPrefix}/bff.env`],
-      networks: ["default"],
+      networks: ["onecx"],
       profiles: [
-        "base",
-        `${dashName}`,
-        `${dashName}-ui`,
         "all"
       ],
     };
 
     const ui = {
       image: `\${${underscoreName.toUpperCase()}_UI}`,
+      container_name: `${dashName}-ui`,
       environment: {
         APP_BASE_HREF: `/mfe/${uiPath}/`, // NEEDS CUSTOM NAME
         APP_ID: `${dashName}-ui`,
@@ -203,11 +206,8 @@ export class CreateDockerCommand
         `traefik.http.services.${dashName}-ui.loadbalancer.server.port=8080`,
         `traefik.http.routers.${dashName}-ui.rule=Host(\`local-proxy\`)&&PathPrefix(\`/mfe/${uiPath}/\`)`,
       ],
-      networks: ["default"],
+      networks: ["onecx"],
       profiles: [
-        "base",
-        `${dashName}`,
-        `${dashName}-ui`,
         "all"
       ],
     };

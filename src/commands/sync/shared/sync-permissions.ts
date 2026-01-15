@@ -19,7 +19,7 @@ export class SyncPermissions
     values: OneCXValuesSpecification,
     { env, dry, ...params }: SyncPermissionsParams
   ): void {
-    const importsDir = getEnvDirectory("./imports/permissions", env);
+    const importsDir = getEnvDirectory("./onecx-data/permission", env);
 
     if (
       !values.operator?.permission?.spec?.permissions ||
@@ -60,10 +60,10 @@ export class SyncPermissions
     }
 
     // Sync assignments
-    const assignmentsDir = getEnvDirectory("./imports/assignments", env);
+    const assignmentsDir = getEnvDirectory("./onecx-data/permission-assignment", env);
     const assignmentsFilePath = getAssignmentsFilePath(
       assignmentsDir,
-      params.assignmentsFilePrefix ?? "",
+      params.assignmentsFilePrefix ?? "onecx-local-env",
       params.productName
     );
 
@@ -121,7 +121,7 @@ export class SyncPermissions
     _: OneCXValuesSpecification,
     { env, dry, ...params }: SyncPermissionsParams
   ): void {
-    const importsDir = getEnvDirectory("./imports/permissions", env);
+    const importsDir = getEnvDirectory("./onecx-data/permission", env);
     const fileName = `${params.productName}_${params.appName}.json`;
     const filePath = path.join(importsDir, fileName);
 
@@ -135,7 +135,7 @@ export class SyncPermissions
     }
 
     // Remove assignments
-    const assignmentsDir = getEnvDirectory("./imports/assignments", env);
+    const assignmentsDir = getEnvDirectory("./onecx-data/permission-assignment", env);
     const assignmentsFilePath = getAssignmentsFilePath(
       assignmentsDir,
       params.assignmentsFilePrefix ?? "",
@@ -195,6 +195,6 @@ function getAssignmentsFilePath(
   productName: string
 ): string {
   return prefix
-    ? path.join(assignmentsDir, `${prefix}_${productName}.json`)
+    ? path.join(assignmentsDir, `${productName}.json`)
     : path.join(assignmentsDir, "onecx.json");
 }

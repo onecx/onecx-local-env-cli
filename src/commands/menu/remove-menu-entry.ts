@@ -20,7 +20,7 @@ export class RemoveMenuEntryCommand
   run(data: RemoveMenuEntryData): void {
     logger.info("Removing menu entry...");
     // Validate imports directory exists
-    const importsDirectory = getEnvDirectory("./imports/workspace", data.env);
+    const importsDirectory = getEnvDirectory("./onecx-data/workspace", data.env);
     if (!fs.existsSync(importsDirectory)) {
       throw new Error(
         `Imports directory not found at path: ${importsDirectory}`
@@ -29,7 +29,7 @@ export class RemoveMenuEntryCommand
 
     const workspaceFilePath = path.join(
       importsDirectory,
-      `onecx_${data.workspace}.json`
+      `default_${data.workspace}.json`
     );
     const workspaceFile = fs.readFileSync(workspaceFilePath, "utf8");
     const workspace = JSON.parse(workspaceFile);

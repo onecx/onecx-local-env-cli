@@ -20,12 +20,12 @@ export class RemoveDockerCommand
     logger.info("Removing services...");
 
     this.removeFromDockerCompose(data);
-    logger.info(`Removed services from ${data.name}.docker-compose.yml`);
+    logger.info(`Removed services from ${data.name}.compose.yaml`);
   }
 
   removeFromDockerCompose(data: RemoveDockerCommandParameters) {
     const envDirectory = getEnvDirectory("", data.env);
-    const fileName = `${data.name}.docker-compose.yml`;
+    const fileName = `${data.name}.compose.yaml`;
     const filePath = `${envDirectory}/${fileName}`;
 
     let fileContent: DockerFileContent = {};
