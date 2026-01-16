@@ -56,7 +56,7 @@ export class OneCXLocalEnvCLI {
       .option(
         "--workspaceName <workspace>",
         "Workspace name to add the App to",
-        "admin"
+        "ADMIN"
       )
       .option(
         "-i, --icon <iconName>",
@@ -66,7 +66,7 @@ export class OneCXLocalEnvCLI {
       .option(
         "--assignmentsFilePrefix <prefix>",
         "Prefix for assignments file",
-        ""
+        "onecx-local-env"
       )
       .option("-d, --dry", "If should do a dry run", false)
       .option("-R, --remove", "If synchronization should be removed", false)
@@ -110,7 +110,7 @@ export class OneCXLocalEnvCLI {
       .option(
         "-w, --workspace <workspace>",
         "The name of the workspace",
-        "admin"
+        "ADMIN"
       )
       .option(
         "-r, --roles <roles...>",

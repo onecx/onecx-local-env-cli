@@ -23,17 +23,17 @@ export class CreateMenuEntryCommand
     // Assure roles is an array
     data.roles = Array.isArray(data.roles) ? data.roles : [data.roles];
 
-    // Validate imports directory exists
-    const importsDirectory = getEnvDirectory("./imports/workspace", data.env);
-    if (!fs.existsSync(importsDirectory)) {
+    // Validate onecx data directory exists
+    const onecxDataDirectory = getEnvDirectory("./onecx-data/workspace", data.env);
+    if (!fs.existsSync(onecxDataDirectory)) {
       throw new Error(
-        `Imports directory not found at path: ${importsDirectory}`
+        `OneCX data directory not found at path: ${onecxDataDirectory}`
       );
     }
 
     const workspaceFilePath = path.join(
-      importsDirectory,
-      `onecx_${data.workspace}.json`
+      onecxDataDirectory,
+      `default_${data.workspace}.json`
     );
     const workspaceFile = fs.readFileSync(workspaceFilePath, "utf8");
     const workspace = JSON.parse(workspaceFile);
@@ -102,6 +102,7 @@ export function createMenuEntryForApplication(
     position: 0,
     badge,
     external: false,
+    target: "_self",
     i18n: {
       en: name,
       de: name,
@@ -119,6 +120,7 @@ const getCustomApplicationMenuEntry = (roles: string[]): MenuEntry => ({
   position: 0,
   badge: "folder",
   external: false,
+  target: "_self",
   i18n: {
     en: "Custom Applications",
     de: "Custom Applications",
@@ -136,6 +138,7 @@ interface MenuEntry {
   position: number;
   badge: string;
   external: boolean;
+  target: string;
   i18n: {
     en: string;
     de: string;
