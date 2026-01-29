@@ -204,7 +204,7 @@ export class CreateDockerCommand
       },
       labels: [
         `traefik.http.services.${dashName}-ui.loadbalancer.server.port=8080`,
-        `traefik.http.routers.${dashName}-ui.rule=Host(\`local-proxy\`)&&PathPrefix(\`/mfe/${uiPath}/\`)`,
+        `traefik.http.routers.${dashName}-ui.rule=Host(\`onecx.localhost\`) && PathPrefix(\`/mfe/${uiPath}/\`)`,
       ],
       networks: ["onecx"],
       profiles: [
