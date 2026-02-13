@@ -29,6 +29,9 @@ jobs:
         run: npm run test --configuration=ci
       - name: Build
         run: npm run build
+      - name: Remove always-auth from npmrc
+        run: |
+          sed -i '/always-auth/d' ${NPM_CONFIG_USERCONFIG} || true
       - name: Release
         run: npx semantic-release
         env:
