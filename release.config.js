@@ -47,8 +47,7 @@ module.exports = {
     [
       "@semantic-release/npm",
       {
-        npmPublish: true,
-        provenance: true
+        npmPublish: true
       }
     ],
   ],
