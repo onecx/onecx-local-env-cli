@@ -1,0 +1,23 @@
+ifdef::env-site[]
+include::partial$_attributes.adoc[]
+endif::[]
+:page-hide-prev:
+:imagesdir: ../images
+
+= Command Line Interface for OneCX Local Environment
+
+*onecx-local-env-cli* is the command line interface for the OneCX local development environment. It provides tools and scripts to manage and interact with the local OneCX instance.
+
+*onecx-local-env-cli* can either be used as a standalone tool, or integrated into custom development environments via Git submodules. Custom development environments can interact with *onecx-local-env-cli* via provided lifecycle-scripts and extend its functionality by wrapping the provided Docker Compose and script files with custom implementations.
+
+== Available Commands
+The CLI provides several commands to manage the local OneCX environment.
+
+.Available Commands
+* *sync*: Synchronize microservices (ui, bff, svc) with options for environment, name, YAML section path, role, workspace, icon, assignments file prefix, dry run, remove, and verbose output.
+* *menu*: Manage menu entries (create/remove) for applications, with options for environment, badge, workspace, roles, dry run, and verbose output.
+* *docker*: Manage custom Docker Compose files (create/remove) for products, with options for sections, environment, force creation, dry run, verbose output, and adapting .env files.
+
+Each command supports various options for environment, naming, dry run, verbose output, and more. See CLI help for details.
+
+

@@ -1,7 +1,12 @@
 {
   "name": "@onecx/local-env-cli",
-  "version": "1.6.1",
   "description": "A CLI to interact with onecx-local-env",
+  "private": true,
+  "version": "1.6.1",
+  "license": "Apache-2.0",
+  "contributors": [
+    "OneCX Development Team <onecx_dev@1000kit.org>"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/onecx/onecx-local-env-cli"
@@ -23,7 +28,6 @@
   "files": [
     "dist"
   ],
-  "license": "MIT",
   "dependencies": {
     "@types/colors": "^1.2.4",
     "colors": "^1.4.0",

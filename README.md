@@ -1,11 +1,18 @@
 # onecx-local-env-cli
-> The current version of `onecx-local-env-cli` is fully compatible with [`onecx-local-env` v2](https://github.com/onecx/onecx-local-env/blob/main/versions/v2/README.md). If you are still using [`onecx-local-env` v1](https://github.com/onecx/onecx-local-env/blob/main/versions/v1/README.md), please make sure to use `onecx-local-env-cli` version `1.5.2` or smaller by appending the version to all commands (e.g. `npx @onecx/local-env-cli@1.5.2 sync`). If you want to benefit from the latest features without switching to v2, you can also use the latest version of `onecx-local-env-cli` and manually adjust the generated output to be compatible with v1. Please refer to the [`onecx-local-env` documentation](https://onecx.github.io/docs/onecx-local-env/current/general/index.html) for more information on the differences between versions.
 
-This CLI helps you with setting up microservices in the  [onecx-local-env](http://github.com/onecx/onecx-local-env/).
+**Command Line Interface for OneCX Local Environment**
+
+This package provides functionality to set up custom microservices in the OneCX Local Environment, see 
+[Repository](http://github.com/onecx/onecx-local-env/) and 
+[Documentation](https://onecx.github.io/docs/documentation/current/onecx-local-env/index.html).
+
+> The current version is fully compatible with the [`onecx-local-env` v2 edition](https://github.com/onecx/onecx-local-env/blob/main/versions/v2/README.md).
+If you are still using [`onecx-local-env` v1](https://github.com/onecx/onecx-local-env/blob/main/versions/v1/README.md), please make sure to use `onecx-local-env-cli` version `1.5.2` or smaller by appending the version to all commands (e.g. `npx @onecx/local-env-cli@1.5.2 sync`). Due to v1 edition is outdated, it is recommended to use the current edition v2 of the loval environment. If you want to benefit from the latest features without switching to v2, you can also use the latest version of `onecx-local-env-cli` and manually adjust the generated output to be compatible with v1.
+
 
 # Installation
 
-To use the command, the simplest way is to use npx: `npx @onecx/local-env-cli`.
+The simplest way to use the CLI in current version is to use the [npm package](https://www.npmjs.com/package/@onecx/local-env-cli) directly on your product directory via `npx @onecx/local-env-cli`.
 
 # Usage
 
