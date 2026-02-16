@@ -1,3 +1,18 @@
+## [1.7.0](https://github.com/onecx/onecx-local-env-cli/compare/v1.6.1...v1.7.0) (2026-02-16)
+
+### Features
+
+* use onecx.localhost ([9ce8b27](https://github.com/onecx/onecx-local-env-cli/commit/9ce8b270a71af49e82b069cf2ebf3ca9a8ad70e7))
+
+### Bug Fixes
+
+* adjust local env entries ([#23](https://github.com/onecx/onecx-local-env-cli/issues/23)) ([e47a6ef](https://github.com/onecx/onecx-local-env-cli/commit/e47a6ef9c225f99a578402414c02d73c2b9775e8))
+* fix env file paths to ensure full compatibility with local-env v2 ([#21](https://github.com/onecx/onecx-local-env-cli/issues/21)) ([62cf560](https://github.com/onecx/onecx-local-env-cli/commit/62cf56050f27bc2e50c5c56902cb7da3e6c59f4a))
+* release process ([#25](https://github.com/onecx/onecx-local-env-cli/issues/25)) ([e460ae4](https://github.com/onecx/onecx-local-env-cli/commit/e460ae49a597c413491e0f85259d02878decaf46))
+* remove provenance from release config ([7ddd9d8](https://github.com/onecx/onecx-local-env-cli/commit/7ddd9d80ff3118887638fdf2951f072660a5752a))
+* update npm release process ([#24](https://github.com/onecx/onecx-local-env-cli/issues/24)) ([925fe95](https://github.com/onecx/onecx-local-env-cli/commit/925fe95247e9887175a9f2cfd77a36daa18511b0))
+* upgrade semantic-release dependency ([#29](https://github.com/onecx/onecx-local-env-cli/issues/29)) ([181c57e](https://github.com/onecx/onecx-local-env-cli/commit/181c57e06f4ff76ed15ab892859b8e6dc41d6e97))
+
 ## [1.6.1](https://github.com/onecx/onecx-local-env-cli/compare/v1.6.0...v1.6.1) (2025-09-17)
 
 ### Bug Fixes
