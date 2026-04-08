@@ -19,7 +19,7 @@ jobs:
       - name: Update npm
         run: |
           npm install -g npm@10.9.8
-          npm install -g npm@latest
+          npm --version
       - name: Install deps
         run: npm ci
       - name: Lint
