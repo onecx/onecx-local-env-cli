@@ -1,7 +1,6 @@
 {
   "name": "@onecx/local-env-cli",
   "description": "A CLI to interact with onecx-local-env",
-  "private": true,
   "version": "1.7.0",
   "license": "Apache-2.0",
   "contributors": [
