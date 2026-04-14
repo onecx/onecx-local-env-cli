@@ -1,6 +1,9 @@
 module.exports = {
   branches: [
-    "main",
+    {
+      name: "main",
+      channel: "latest",
+    },
     {
       name: "develop",
       channel: "rc",
@@ -34,6 +37,7 @@ module.exports = {
       "@semantic-release/exec",
       {
         prepareCmd: `VERSION=\${nextRelease.version} npx -p replace-json-property rjp ./package.json version \${nextRelease.version}`,
+        publishCmd: `npm publish --provenance --tag \${nextRelease.channel}`,
       },
     ],
     [
@@ -43,12 +47,6 @@ module.exports = {
         message:
           "chore(release): -v${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
       },
-    ],
-    [
-      "@semantic-release/npm",
-      {
-        npmPublish: true
-      }
     ],
   ],
 };
