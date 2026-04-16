@@ -1,3 +1,11 @@
+## [1.7.1](https://github.com/onecx/onecx-local-env-cli/compare/v1.7.0...v1.7.1) (2026-04-16)
+
+### Bug Fixes
+
+* release workflow without npm token ([#33](https://github.com/onecx/onecx-local-env-cli/issues/33)) ([11188c9](https://github.com/onecx/onecx-local-env-cli/commit/11188c9986f1a1b71b1dfcc2c222eff4374aa9e7))
+* remove private setting from package.json to reenable release ([#30](https://github.com/onecx/onecx-local-env-cli/issues/30)) ([2afa37f](https://github.com/onecx/onecx-local-env-cli/commit/2afa37f2c97478ea7501bb5545e62dcf2d0d10b3))
+* switch to latest node LTS ([#32](https://github.com/onecx/onecx-local-env-cli/issues/32)) ([0a54c42](https://github.com/onecx/onecx-local-env-cli/commit/0a54c42f5b07a4b12479df56e6ce0f525f2d98b1))
+
 ## [1.7.0](https://github.com/onecx/onecx-local-env-cli/compare/v1.6.1...v1.7.0) (2026-02-16)
 
 ### Features
