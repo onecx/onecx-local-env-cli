@@ -15,6 +15,10 @@ export interface OneCXValuesSpecification {
       };
     };
     microfrontend: {
+      entrySuffix?: string;
+      spec?: {
+        shareScope?: string;
+      };
       specs: {
         [key: string]: MicrofrontendSpecification;
       };
@@ -40,6 +44,8 @@ export interface MicrofrontendSpecification {
   technology: string;
   tagName: string;
   type: string;
+  entrySuffix?: string;
+  shareScope?: string;
 }
 
 export interface ProductSpecification {

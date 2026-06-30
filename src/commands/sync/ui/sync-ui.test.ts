@@ -23,7 +23,7 @@ describe("Sync UI Command", () => {
     dry: false,
     remove: false,
     verbose: false,
-    onecxSectionPath: 'app'
+    onecxSectionPath: "app",
   };
 
   const mockValues: OneCXValuesSpecification = {
@@ -51,14 +51,14 @@ describe("Sync UI Command", () => {
       jest.spyOn(valuesUtil, "retrieveValuesYAML").mockReturnValue(
         new Promise((r) => {
           r(mockValues);
-        })
+        }),
       );
 
       try {
         async () => await cmd.run(defaultData);
       } catch (e) {
         expect(e).toMatch(
-          "No repository found in values file and no custom name provided."
+          "No repository found in values file and no custom name provided.",
         );
       }
     });
@@ -67,14 +67,14 @@ describe("Sync UI Command", () => {
       jest.spyOn(valuesUtil, "retrieveValuesYAML").mockReturnValue(
         new Promise((r) => {
           r(mockValues);
-        })
+        }),
       );
 
       try {
         async () => await cmd.run(defaultData);
       } catch (e) {
         expect(e).toMatch(
-          new RegExp("Imports directory not found at path:(.*)")
+          new RegExp("Imports directory not found at path:(.*)"),
         );
       }
     });
@@ -91,7 +91,7 @@ describe("Sync UI Command", () => {
       jest.spyOn(valuesUtil, "retrieveValuesYAML").mockReturnValue(
         new Promise((r) => {
           r(mockValues);
-        })
+        }),
       );
     });
 

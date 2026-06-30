@@ -9,34 +9,34 @@ export interface SyncMicrofrontendsparams extends SyncUIData {
   uiName: string;
 }
 
-export class SyncMicrofrontends
-  implements SynchronizationStep<SyncMicrofrontendsparams> {
+export class SyncMicrofrontends implements SynchronizationStep<SyncMicrofrontendsparams> {
   synchronize(
     values: OneCXValuesSpecification,
-    { env, dry, ...params }: SyncMicrofrontendsparams
+    { env, dry, ...params }: SyncMicrofrontendsparams,
   ): void {
     const importsDirectory = getEnvDirectory(
       "./onecx-data/product-store/microfrontends",
-      env
+      env,
     );
 
-    if (
-      !values?.operator?.microfrontend
-    ) {
+    if (!values?.operator?.microfrontend) {
       logger.info(
-        "No microfrontends found in values file. Skipping synchronization."
+        "No microfrontends found in values file. Skipping synchronization.",
       );
       return;
     }
 
     const microfrontends = values.operator.microfrontend.specs;
+    const defaultEntrySuffix =
+      values.operator.microfrontend.entrySuffix ?? "remoteEntry.js";
+    const defaultShareScope = values.operator.microfrontend.spec?.shareScope;
 
     for (const [key, spec] of Object.entries(microfrontends)) {
       const fileName = `${params.productName}_${spec.remoteName}_${key}.json`;
       const filePath = path.join(importsDirectory, fileName);
 
       let remotePath = `/mfe/${spec.remoteName}/`;
-      if(values?.routing?.path){
+      if (values?.routing?.path) {
         remotePath = values.routing.path;
       }
 
@@ -45,11 +45,12 @@ export class SyncMicrofrontends
         appName: spec.remoteName,
         description: spec.description,
         remoteBaseUrl: remotePath,
-        remoteEntry: `${remotePath}remoteEntry.js`,
+        remoteEntry: `${remotePath}${spec.entrySuffix ?? defaultEntrySuffix}`,
         note: spec.note || "Imported MFE",
         exposedModule: spec.exposedModule,
         technology: spec.technology,
         remoteName: spec.remoteName,
+        shareScope: spec.shareScope ?? defaultShareScope,
         tagName: spec.tagName,
         type: spec.type,
         deprecated: false,
@@ -58,18 +59,17 @@ export class SyncMicrofrontends
 
       for (const requiredField of [
         "remoteName",
-        "remoteEntry",
         "exposedModule",
         "tagName",
         "type",
       ]) {
         if (
           !Object.entries(spec).some(
-            ([e, v]) => e === requiredField && v != null
+            ([e, v]) => e === requiredField && v != null,
           )
         ) {
           logger.warning(
-            `Missing field ${requiredField} in microfrontend spec ${key}, this can cause issues.`
+            `Missing field ${requiredField} in microfrontend spec ${key}, this can cause issues.`,
           );
         }
       }
@@ -77,7 +77,7 @@ export class SyncMicrofrontends
       if (dry) {
         logger.info(
           `Dry Run: Would write to ${filePath} with content:`,
-          JSON.stringify(jsonContent, null, 2)
+          JSON.stringify(jsonContent, null, 2),
         );
       } else {
         fs.writeFileSync(filePath, JSON.stringify(jsonContent, null, 2));
@@ -89,16 +89,14 @@ export class SyncMicrofrontends
 
   removeSynchronization(
     values: OneCXValuesSpecification,
-    { env, dry, ...params }: SyncMicrofrontendsparams
+    { env, dry, ...params }: SyncMicrofrontendsparams,
   ): void {
     const importsDirectory = getEnvDirectory(
       "./onecx-data/product-store/microfrontends",
-      env
+      env,
     );
 
-    if (
-      !values?.operator?.microfrontend
-    ) {
+    if (!values?.operator?.microfrontend) {
       logger.info("No microfrontends found in values file. Skipping.");
       return;
     }
