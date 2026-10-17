@@ -4,6 +4,7 @@ import { SynchronizationStep } from "../../../util/synchronization-step";
 
 import { red } from "colors/safe";
 import { getEnvDirectory, logger } from "../../../util/utils";
+import { getSyncFileName } from "../shared/naming";
 import { SyncUIData } from "./sync-ui";
 import { OneCXValuesSpecification } from "../types";
 
@@ -35,7 +36,7 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
         description: string;
       }
     ][]) {
-      const fileName = `${params.productName}_${params.uiName}_${key}.json`;
+      const fileName = getSyncFileName(params.productName, params.uiName, key);
       const filePath = path.join(importsDirectory, fileName);
 
       const jsonContent = {
@@ -75,7 +76,7 @@ export class SyncSlots implements SynchronizationStep<SyncSlotsparams> {
     const slots = values.operator.slot.specs;
 
     for (const key of Object.keys(slots)) {
-      const fileName = `${params.productName}_${params.uiName}_${key}.json`;
+      const fileName = getSyncFileName(params.productName, params.uiName, key);
       const filePath = path.join(importsDirectory, fileName);
 
       if (dry) {

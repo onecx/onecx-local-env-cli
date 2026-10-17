@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getEnvDirectory, logger } from "../../../util/utils";
+import { getSyncFileName } from "./naming";
 import { SharedSyncData } from "../sync-command";
 import { OneCXValuesSpecification } from "../types";
 
@@ -30,7 +31,7 @@ export class SyncPermissions
       );
       return;
     }
-    const fileName = `${params.productName}_${params.appName}.json`;
+    const fileName = getSyncFileName(params.productName, params.appName);
     const filePath = path.join(importsDir, fileName);
 
     const permissionFile: {
@@ -122,7 +123,7 @@ export class SyncPermissions
     { env, dry, ...params }: SyncPermissionsParams
   ): void {
     const importsDir = getEnvDirectory("./onecx-data/permission", env);
-    const fileName = `${params.productName}_${params.appName}.json`;
+    const fileName = getSyncFileName(params.productName, params.appName);
     const filePath = path.join(importsDir, fileName);
 
     if (fs.existsSync(filePath)) {

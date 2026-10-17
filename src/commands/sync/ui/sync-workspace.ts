@@ -67,8 +67,6 @@ export class SyncWorkspace
       microfrontends: [],
     };
 
-    const microfrontends = values.operator.microfrontend.specs;
-
     if (product.microfrontends.length > 0) {
       logger.verbose(
         "Found existing microfrontends in product: ",
@@ -76,31 +74,23 @@ export class SyncWorkspace
       );
     }
 
-    // TODO: key/spec not used at all => fix
-    for (const [_, spec] of Object.entries(microfrontends) as [
-      string,
-      {
-        remoteName: string;
-      }
-    ][]) {
-      const microfrontend = {
-        appId: spec.remoteName,
-        basePath: "/",
-      };
+    // All microfrontends of one UI share the same appId
+    const microfrontend = {
+      appId: params.uiName,
+      basePath: "/",
+    };
 
-      const existingMicrofrontend = product.microfrontends.find(
-        (mf: ProductMicrofrontendSpecification) =>
-          mf.appId == microfrontend.appId &&
-          mf.basePath == microfrontend.basePath
+    const existingMicrofrontend = product.microfrontends.find(
+      (mf: ProductMicrofrontendSpecification) =>
+        mf.appId == microfrontend.appId && mf.basePath == microfrontend.basePath
+    );
+
+    if (existingMicrofrontend === undefined) {
+      product.microfrontends.push(microfrontend);
+    } else {
+      logger.info(
+        `Microfrontend ${microfrontend.appId} with base path ${microfrontend.basePath} already exists. Skipping...`
       );
-
-      if (existingMicrofrontend === undefined) {
-        product.microfrontends.push(microfrontend);
-      } else {
-        logger.info(
-          `Microfrontend ${microfrontend.appId} with base path ${microfrontend.basePath} already exists. Skipping...`
-        );
-      }
     }
 
     if (existingProduct) {
