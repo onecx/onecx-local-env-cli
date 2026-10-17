@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { SynchronizationStep } from "../../../util/synchronization-step";
 import { getEnvDirectory, logger } from "../../../util/utils";
+import { getSyncFileName } from "../shared/naming";
 import { OneCXValuesSpecification } from "../types";
 import { SyncUIData } from "./sync-ui";
 
@@ -32,7 +33,7 @@ export class SyncMicrofrontends implements SynchronizationStep<SyncMicrofrontend
     const defaultShareScope = values.operator.microfrontend.spec?.shareScope;
 
     for (const [key, spec] of Object.entries(microfrontends)) {
-      const fileName = `${params.productName}_${spec.remoteName}_${key}.json`;
+      const fileName = getSyncFileName(params.productName, params.uiName, key);
       const filePath = path.join(importsDirectory, fileName);
 
       let remotePath = `/mfe/${spec.remoteName}/`;
@@ -42,7 +43,7 @@ export class SyncMicrofrontends implements SynchronizationStep<SyncMicrofrontend
 
       const jsonContent = {
         appVersion: "xxx",
-        appName: spec.remoteName,
+        appName: params.uiName,
         description: spec.description,
         remoteBaseUrl: remotePath,
         remoteEntry: `${remotePath}${spec.entrySuffix ?? defaultEntrySuffix}`,
@@ -104,7 +105,7 @@ export class SyncMicrofrontends implements SynchronizationStep<SyncMicrofrontend
     const microfrontends = values.operator.microfrontend.specs;
 
     for (const key of Object.keys(microfrontends)) {
-      const fileName = `${params.productName}_${params.uiName}_${key}.json`;
+      const fileName = getSyncFileName(params.productName, params.uiName, key);
       const filePath = path.join(importsDirectory, fileName);
 
       if (fs.existsSync(filePath)) {

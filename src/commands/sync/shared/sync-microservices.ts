@@ -5,6 +5,7 @@ import { getEnvDirectory, logger } from "../../../util/utils";
 
 import { red } from "colors/safe";
 import { SharedSyncData } from "../sync-command";
+import { getSyncFileName } from "./naming";
 import { OneCXValuesSpecification } from "../types";
 
 export interface SyncMicroservicesparams extends SharedSyncData {
@@ -24,7 +25,7 @@ export class SyncMicroservices
       env
     );
 
-    const fileName = `${params.productName}_${params.customName}.json`;
+    const fileName = getSyncFileName(params.productName, params.customName);
     const filePath = path.join(importsDir, fileName);
 
     const jsonContent = {
@@ -55,7 +56,7 @@ export class SyncMicroservices
       env
     );
 
-    const fileName = `${params.productName}_${params.customName}.json`;
+    const fileName = getSyncFileName(params.productName, params.customName);
     const filePath = path.join(importsDir, fileName);
 
     if (dry) {
